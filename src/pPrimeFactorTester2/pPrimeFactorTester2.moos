@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pPrimeFactorTester2 config block
+
+ProcessConfig = pPrimeFactorTester2
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+
