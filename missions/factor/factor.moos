@@ -1,0 +1,42 @@
+ServerHost = localhost
+ServerPort = 9000
+Community = factor
+
+ProcessConfig = ANTLER
+
+{
+	MSBetweenLaunches = 200
+
+	Run = MOOSDB		      @NewConsole = false
+	Run = pPrimeFactor	      @NewConsole = true
+	Run = pPrimeFactorTester      @NewConsole = true
+	Run = uTimerScript	      @NewConsole = false
+}
+
+ProcessConfig = pPrimeFactor2
+{
+	AppTick = 4
+	CommsTick = 4
+}
+
+
+ProcessConfig = pPrimeFactorTester2
+{
+	AppTick		= 4
+	CommsTick	= 4
+}
+
+ProcessConfig = uTimerScript
+{
+
+	AppTick		= 4
+	CommsTick	= 4
+
+	PAUSED		= false
+	EVENT		= var=NUM_VALUE, val=$(4), time=0.25
+	EVENT		= var=NUM_VALUE, val=$(4), time=0.50
+	EVENT		= var=NUM_VALUE, val=$(4), time=0.75
+	EVENT		= var=NUM_VALUE, val=$(4), time=1.00
+	RESET_MAX	= nolimit
+	RESET_TIME	= all-posted
+}
