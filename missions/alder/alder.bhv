@@ -25,7 +25,7 @@ Behavior = BHV_SimpleWaypoint
   name       = waypt_return
   pwt        = 100
   condition  = (RETURN = true)  or (ODOMETRY_DIST >= 50)
-//  condition  = (DEPLOY = true) // or (ODOMETRY_DIST >= 50)
+  condition  = (DEPLOY = true) 
 
   speed      = 2.0
   radius     = 8.0

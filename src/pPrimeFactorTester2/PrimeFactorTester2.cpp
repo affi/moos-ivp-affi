@@ -21,11 +21,10 @@ PrimeFactorTester2::PrimeFactorTester2()
   outgoing_var      = "";
   prime_string_test = "";
   outgoing_string   = "";
-
   original_value    = 0;
 
-  m_iterations = 0;
-  m_timewarp   = 1;
+  m_iterations      = 0;
+  m_timewarp        = 1;
 }
 
 //---------------------------------------------------------

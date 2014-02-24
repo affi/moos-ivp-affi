@@ -8,9 +8,10 @@
 #ifndef Odometry2_HEADER
 #define Odometry2_HEADER
 
-#include "MOOS/libMOOS/MOOSLib.h"
+//#include "MOOS/libMOOS/MOOSLib.h"
+#include "MOOS/libMOOS/Thirdparty/AppCasting/AppCastingMOOSApp.h"
 
-class Odometry2 : public CMOOSApp
+class Odometry2 : public AppCastingMOOSApp
 {
 public:
     Odometry2();
@@ -21,7 +22,7 @@ protected:
     bool Iterate();
     bool OnConnectToServer();
     bool OnStartUp();
-    void RegisterVariables();
+    void registerVariables();
     
     bool   m_first_reading;
     double m_current_x;
@@ -29,6 +30,8 @@ protected:
     double m_previous_x;
     double m_previous_y;
     double m_total_distance;
+
+    bool  buildReport();
     
 private: // Configuration variables
     

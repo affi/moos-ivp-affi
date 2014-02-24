@@ -43,6 +43,8 @@ Odometry2::~Odometry2()
 
 bool Odometry2::OnNewMail(MOOSMSG_LIST &NewMail)
 {
+    AppCastingMOOSApp::OnNewMail(NewMail);
+    
     MOOSMSG_LIST::iterator p;
     
     for(p=NewMail.begin(); p!=NewMail.end(); p++) {
@@ -80,12 +82,13 @@ bool Odometry2::OnConnectToServer()
 bool Odometry2::Iterate()
 {
     m_total_distance += sqrt(pow((m_current_x - m_previous_x),2) +
-                           pow((m_current_y - m_previous_y),2));
+                             pow((m_current_y - m_previous_y),2));
     cout << "Total distance is " << m_total_distance << endl;
     m_Comms.Notify("ODOMETRY_DIST", m_total_distance);
     
     
     m_iterations++;
+    AppCastingMOOSApp::PostReport();
     return(true);
 }
 
@@ -95,6 +98,7 @@ bool Odometry2::Iterate()
 
 bool Odometry2::OnStartUp()
 {
+    AppCastingMOOSApp::OnStartUp();
     list<string> sParams;
     m_MissionReader.EnableVerbatimQuoting(false);
     
@@ -117,16 +121,35 @@ bool Odometry2::OnStartUp()
     
     m_timewarp = GetMOOSTimeWarp();
     
-    RegisterVariables();
+    registerVariables();
     return(true);
 }
 
 //---------------------------------------------------------
 // Procedure: RegisterVariables
 
-void Odometry2::RegisterVariables()
+//void Odometry2::RegisterVariables()
+//{
+//    m_Comms.Register("NAV_X",0);
+//    m_Comms.Register("NAV_Y",0);
+//}
+
+
+//---------------------------------------------------------
+// Procedure: registerVariables
+void Odometry2::registerVariables()
 {
+    AppCastingMOOSApp::RegisterVariables();
+    
     m_Comms.Register("NAV_X",0);
     m_Comms.Register("NAV_Y",0);
+    
+}
+
+//---------------------------------------------------------
+bool Odometry2::buildReport()
+{
+    m_msgs << "Total distance traveled: " << m_total_distance <<endl;
+    return(true);
 }
 
