@@ -71,10 +71,13 @@ bool PrimeFactorTester2::OnNewMail(MOOSMSG_LIST &NewMail)
                 cout << "original number " << svector[0] << endl;
                 
                 // convert the original value (string) to unsigned long
-                original_value  = strtoul(temp_string.c_str(),NULL,0);
+                original_value  = strtoul(svector[0].c_str(),NULL,0);
+                cout << "new orig val " << original_value << endl;
                 
                 // remove "primes:" to get only string of primes
-                prime_string_in = stripBlankEnds(biteString(svector[4],'='));
+                temp_string = stripBlankEnds(biteString(svector[3],'='));
+                
+                prime_string_in = svector[3];
             }
         }
     }
@@ -100,6 +103,7 @@ bool PrimeFactorTester2::Iterate()
     Factorize(original_value);
     
     cout << "Prime string test: " << prime_string_test << endl;
+    cout << "Prime string in: " << prime_string_in << endl;
     // if they match, string was valid, else it was not
     if (prime_string_in == prime_string_test)
         outgoing_string = received_string + ",valid=true";

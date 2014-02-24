@@ -1,8 +1,14 @@
 /************************************************************/
-/*    NAME: Janille                                              */
+/*    NAME: Janille M. Maragh                               */
 /*    ORGN: MIT                                             */
-/*    FILE: Odometry2.cpp                                        */
-/*    DATE:                                                 */
+/*    FILE: Odometry2.cpp                                   */
+/*    DATE: February 24, 2014                               */
+/*    SUMMARY: This app calculated the total distance a     */
+/*    vehicle has traveled by calculating how far it has    */
+/*    traveled between readings of x- and y-positions. It   */
+/*    subscribes to  NAV_X and NAV_Y. By constantly adding  */
+/*    the distance traveled since the last reading, the     */
+/*    total distance traveled is calculated. Is Appcasting. */
 /************************************************************/
 
 #include <iterator>
@@ -19,13 +25,13 @@ using namespace std;
 Odometry2::Odometry2()
 {
     // state variables
-    m_iterations       = 0;
-    m_timewarp         = 1;
+    m_iterations         = 0;
+    m_timewarp           = 1;
     
     // initialize variables used to calculate dist traveled
-    m_first_reading    = true;
-    m_current_x        = 0;       // Assigning default values
-    m_current_y        = 0;
+    m_first_reading      = true;
+    m_current_x          = 0;       // Assigning default values
+    m_current_y          = 0;
     m_previous_x         = 0;
     m_previous_y         = 0;
     m_total_distance     = 0;
@@ -49,11 +55,15 @@ bool Odometry2::OnNewMail(MOOSMSG_LIST &NewMail)
     
     for(p=NewMail.begin(); p!=NewMail.end(); p++) {
         CMOOSMsg &msg = *p;
+        
+        // if first reading, set current values now
         if (m_first_reading) {
             m_current_x = msg.GetDouble();
             m_current_y = msg.GetDouble();
             m_first_reading = false;
         }
+        
+        // if not first reading, update previous and current
         if (msg.GetKey() == "NAV_X") {
             m_previous_x = m_current_x;
             m_current_x  = msg.GetDouble();
@@ -71,7 +81,7 @@ bool Odometry2::OnNewMail(MOOSMSG_LIST &NewMail)
 
 bool Odometry2::OnConnectToServer()
 {
-    RegisterVariables();
+    registerVariables();
     return(true);
 }
 
@@ -81,9 +91,11 @@ bool Odometry2::OnConnectToServer()
 
 bool Odometry2::Iterate()
 {
+    // using Pythagoras' theorem to calculate displacement
     m_total_distance += sqrt(pow((m_current_x - m_previous_x),2) +
                              pow((m_current_y - m_previous_y),2));
-    cout << "Total distance is " << m_total_distance << endl;
+
+    // publishing total dist traveled
     m_Comms.Notify("ODOMETRY_DIST", m_total_distance);
     
     
@@ -109,13 +121,6 @@ bool Odometry2::OnStartUp()
             string original_line = *p;
             string param = stripBlankEnds(toupper(biteString(*p, '=')));
             string value = stripBlankEnds(*p);
-            
-            //      if(param == "FOO") {
-            //handled
-            // }
-            // else if(param == "BAR") {
-            //handled
-            //}
         }
     }
     
@@ -125,15 +130,6 @@ bool Odometry2::OnStartUp()
     return(true);
 }
 
-//---------------------------------------------------------
-// Procedure: RegisterVariables
-
-//void Odometry2::RegisterVariables()
-//{
-//    m_Comms.Register("NAV_X",0);
-//    m_Comms.Register("NAV_Y",0);
-//}
-
 
 //---------------------------------------------------------
 // Procedure: registerVariables
@@ -141,8 +137,8 @@ void Odometry2::registerVariables()
 {
     AppCastingMOOSApp::RegisterVariables();
     
-    m_Comms.Register("NAV_X",0);
-    m_Comms.Register("NAV_Y",0);
+    m_Comms.Register("NAV_X", 0);
+    m_Comms.Register("NAV_Y", 0);
     
 }
 
