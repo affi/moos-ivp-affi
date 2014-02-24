@@ -50,7 +50,6 @@ PrimeFactorTester2::~PrimeFactorTester2()
 
 bool PrimeFactorTester2::OnNewMail(MOOSMSG_LIST &NewMail)
 {
-    cout << "reached on new mail" << endl;
     MOOSMSG_LIST::iterator p;
     string temp_string;
     for(p=NewMail.begin(); p!=NewMail.end(); p++) {
@@ -69,6 +68,7 @@ bool PrimeFactorTester2::OnNewMail(MOOSMSG_LIST &NewMail)
                 
                 // remove "orig=" from first item in svector
                 temp_string     = stripBlankEnds(biteString(svector[0],'='));
+                cout << "original number " << svector[0] << endl;
                 
                 // convert the original value (string) to unsigned long
                 original_value  = strtoul(temp_string.c_str(),NULL,0);
@@ -97,7 +97,6 @@ bool PrimeFactorTester2::OnConnectToServer()
 
 bool PrimeFactorTester2::Iterate()
 {
-    cout << "Tester" << received_string << endl;
     Factorize(original_value);
     
     cout << "Prime string test: " << prime_string_test << endl;
@@ -107,6 +106,7 @@ bool PrimeFactorTester2::Iterate()
     else
         outgoing_string = received_string + prime_string_test + ",valid=false";
     
+    cout << "Prime string test: " << prime_string_test << endl;
     m_Comms.Notify("PRIME_RESULT_VALID", outgoing_string);
     
     m_iterations++;
@@ -119,7 +119,6 @@ bool PrimeFactorTester2::Iterate()
 
 bool PrimeFactorTester2::OnStartUp()
 {
-    cout << "reached onstartup" << endl;
     list<string> sParams;
     m_MissionReader.EnableVerbatimQuoting(false);
     if(m_MissionReader.GetConfiguration(GetAppName(), sParams)) {
@@ -146,7 +145,6 @@ bool PrimeFactorTester2::OnStartUp()
 
 void PrimeFactorTester2::RegisterVariables()
 {
-    cout << "registered for variables" << endl;
     m_Comms.Register("PRIME_RESULT", 0);
 }
 
@@ -156,7 +154,10 @@ void PrimeFactorTester2::RegisterVariables()
 void PrimeFactorTester2::Factorize(uint64_t num) {
     for (int i = 2; i < (num/2); i++) {
         if ( (((num/2)/i) == 0) && (IsPrime(i)) ) {
-            prime_string_test += (toString(i) + ":");
+            if(!prime_string_test.empty()) {
+                prime_string_test += ":";
+            }
+            prime_string_test += toString(i);
         }
     }
 }
