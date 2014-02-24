@@ -114,16 +114,21 @@ bool PrimeFactor2::OnConnectToServer()
 
 bool PrimeFactor2::Iterate()
 {
-    m_Comms.Notify("PRIME_RESULT",output_string);
-
     for (int i = 1; i < buffer_length; i++) {
+        // if all factors have been found
         if(num_values.at(i).current_num == 1) {
+            
+            // find timestamp of end of calculation
             num_values.at(i).end_time = MOOSTime();
+            
+            // calculate time taken to solve
             num_values.at(i).solve_time = num_values.at(i).end_time -
                                             num_values.at(i).start_time;
+            
+            // generating whole string for output
             output_string = "orig=" + toString(num_values.at(i).orig_num) +
             ",received=" + toString(num_values.at(i).index_calculated) +
-            ",calculated=" + toString(num_values.at(i).solve_time) +
+            ",calculated=" + toString(num_values.at (i).solve_time) +
             ",primes=" + num_values.at(i).prime_string +
             ",username=" + num_values.at(i).username;
             
@@ -154,8 +159,10 @@ bool PrimeFactor2::OnStartUp()
         list<string>::iterator p;
         for(p=sParams.begin(); p!=sParams.end(); p++) {
             string original_line = *p;
+            // param=variable name, *p is the value stored by variable
             string param = stripBlankEnds(toupper(biteString(*p, '=')));
             string value = stripBlankEnds(*p);
+            
             // never actually used
             if(param == "PRIME_RESULT")
                 outgoing_var = value;
@@ -186,10 +193,9 @@ bool PrimeFactor2::IsPrime(int num) {
     // has no factors besides itself and 1?
     for (int i = 2; i < (num/2); i++) {
         if ((num/i) == 0)
-            return false;
+            return false;       // i is not prime
         else
-            cout << "Found a prime!" << endl;
-            return true;
+            return true;        // found a prime
     }
 }
 
@@ -211,6 +217,7 @@ void PrimeFactor2::Factorize(struct NumberWithFeatures& item, int& calc_num) {
         }
         item.prime_string += toString(i);
     }
+    
     // update current_num by dividing it by i
     item.current_num = (item.current_num)/i;
     
