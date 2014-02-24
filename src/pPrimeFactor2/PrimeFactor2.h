@@ -100,7 +100,7 @@ private:
     // re-initializes a struct: NumberWithFeatures
     void       ClearNumberWithFeatures(struct NumberWithFeatures& item);
     
-private: 
+private:
     unsigned int m_iterations;
     double       m_timewarp;
 };

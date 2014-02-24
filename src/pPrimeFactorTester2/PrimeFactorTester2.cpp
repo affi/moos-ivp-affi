@@ -54,12 +54,12 @@ bool PrimeFactorTester2::OnNewMail(MOOSMSG_LIST &NewMail)
     MOOSMSG_LIST::iterator p;
     string temp_string;
     for(p=NewMail.begin(); p!=NewMail.end(); p++) {
-        // cout << "------ Start of Mail for loop\n";
+        cout << "------ Start of Mail for loop\n";
         
         CMOOSMsg &msg = *p;
         
         if (msg.GetKey() == "PRIME_RESULT") {
-            //cout << "----- Start of check for PRIME_RESULT\n";
+            cout << "----- Start of check for PRIME_RESULT\n";
             
             received_string = msg.GetString();
             if (!received_string.empty()) {
@@ -97,7 +97,7 @@ bool PrimeFactorTester2::OnConnectToServer()
 
 bool PrimeFactorTester2::Iterate()
 {
-    cout << "Tester" << received_string << endl;
+    cout << "Tester" << received_strin << endl;
     Factorize(original_value);
     
     cout << "Prime string test: " << prime_string_test << endl;

@@ -42,7 +42,7 @@ protected:
     bool OnStartUp();
     void RegisterVariables();
     
-private:
+//private:
     string received_string;      // string from PRIME_RESULT, from pPrimeFactor2
     string received_string_copy; // to concatenate with valid=true/valid=false
     string prime_string_in;      // obtained by parsing output of pPrimeFactor2
