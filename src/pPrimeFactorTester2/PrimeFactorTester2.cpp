@@ -97,7 +97,7 @@ bool PrimeFactorTester2::OnConnectToServer()
 
 bool PrimeFactorTester2::Iterate()
 {
-    cout << "Tester" << received_strin << endl;
+    cout << "Tester" << received_string << endl;
     Factorize(original_value);
     
     cout << "Prime string test: " << prime_string_test << endl;
