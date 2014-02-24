@@ -43,7 +43,6 @@ PrimeFactor2::PrimeFactor2()
     outgoing_var = "";
     output_string = "";
     
-    
     // state variables
     m_iterations = 0;
     m_timewarp   = 1;
@@ -123,7 +122,7 @@ bool PrimeFactor2::Iterate()
             
             // calculate time taken to solve
             num_values.at(i).solve_time = num_values.at(i).end_time -
-                                            num_values.at(i).start_time;
+            num_values.at(i).start_time;
             
             // generating whole string for output
             output_string = "orig=" + toString(num_values.at(i).orig_num) +
@@ -133,6 +132,7 @@ bool PrimeFactor2::Iterate()
             ",username=" + num_values.at(i).username;
             
             cout << output_string << endl;
+            
             // publish entire string as "PRIME_RESULT"
             m_Comms.Notify("PRIME_RESULT",output_string);
             ClearNumberWithFeatures(num_values.at(i));
@@ -159,6 +159,7 @@ bool PrimeFactor2::OnStartUp()
         list<string>::iterator p;
         for(p=sParams.begin(); p!=sParams.end(); p++) {
             string original_line = *p;
+            
             // param=variable name, *p is the value stored by variable
             string param = stripBlankEnds(toupper(biteString(*p, '=')));
             string value = stripBlankEnds(*p);
@@ -209,8 +210,10 @@ void PrimeFactor2::Factorize(struct NumberWithFeatures& item, int& calc_num) {
     while (item.current_num%i != 0) {
         i++;
     }
+    
     // is the factor prime?
     if (IsPrime(i)) {
+        
         // adds colon delimeter only if prime_string is not empty
         if(!item.prime_string.empty()) {
             item.prime_string += ":";

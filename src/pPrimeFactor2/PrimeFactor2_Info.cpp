@@ -1,8 +1,8 @@
 /****************************************************************/
-/*   NAME: Janille Maragh                                             */
+/*   NAME: Janille Maragh                                       */
 /*   ORGN: MIT Cambridge MA                                     */
-/*   FILE: PrimeFactor2_Info.cpp                               */
-/*   DATE: Dec 29th 1963                                        */
+/*   FILE: PrimeFactor2_Info.cpp                                */
+/*   DATE: Feb 24, 2014                                         */
 /****************************************************************/
 
 #include <cstdlib>
@@ -20,9 +20,9 @@ void showSynopsis()
 {
   blk("SYNOPSIS:                                                       ");
   blk("------------------------------------                            ");
-  blk("  The pPrimeFactor2 application is used for               ");
-  blk("                                                                ");
-  blk("                                                                ");
+  blk("  An application which takes a number and outputs a             ");
+  blk("  list of its primes factors, the time taken to solve for the   ");
+  blk("  prime factors, and the username of the author of the app.     ");
   blk("                                                                ");
   blk("                                                                ");
 }
@@ -66,10 +66,10 @@ void showExampleConfigAndExit()
 {
   blk("                                                                ");
   blu("=============================================================== ");
-  blu("pPrimeFactor2 Example MOOS Configuration                   ");
+  blu("pPrimeFactor2 Example MOOS Configuration                        ");
   blu("=============================================================== ");
   blk("                                                                ");
-  blk("ProcessConfig = pPrimeFactor2                              ");
+  blk("ProcessConfig = pPrimeFactor2                                   ");
   blk("{                                                               ");
   blk("  AppTick   = 4                                                 ");
   blk("  CommsTick = 4                                                 ");
@@ -87,19 +87,20 @@ void showInterfaceAndExit()
 {
   blk("                                                                ");
   blu("=============================================================== ");
-  blu("pPrimeFactor2 INTERFACE                                    ");
+  blu("pPrimeFactor2 INTERFACE                                         ");
   blu("=============================================================== ");
   blk("                                                                ");
   showSynopsis();
   blk("                                                                ");
   blk("SUBSCRIPTIONS:                                                  ");
   blk("------------------------------------                            ");
-  blk("  NODE_MESSAGE = src_node=alpha,dest_node=bravo,var_name=FOO,   ");
-  blk("                 string_val=BAR                                 ");
+  blk("  NUM_VALUE = 6438                                              ");
+  blk("                                                                ");
   blk("                                                                ");
   blk("PUBLICATIONS:                                                   ");
   blk("------------------------------------                            ");
-  blk("  Publications are determined by the node message content.      ");
+  blk("  PRIME_RESULT = orig=6438,received=37,calculated=1.00267,      ");
+  blk("                   primes=29:37,username=affi                   ");
   blk("                                                                ");
   exit(0);
 }
