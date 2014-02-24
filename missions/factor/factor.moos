@@ -8,8 +8,8 @@ ProcessConfig = ANTLER
 	MSBetweenLaunches = 200
 
 	Run = MOOSDB		      @NewConsole = false
-	Run = pPrimeFactor	      @NewConsole = true
-	Run = pPrimeFactorTester      @NewConsole = true
+	Run = pPrimeFactor2	      @NewConsole = true
+	Run = pPrimeFactorTester2     @NewConsole = true
 	Run = uTimerScript	      @NewConsole = false
 }
 

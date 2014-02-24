@@ -3,6 +3,12 @@
 /*    ORGN: MIT 2.680                                       */
 /*    FILE: PrimeFactor2.cpp                                */
 /*    DATE: February 19, 2014                               */
+/*    SUMMARY: Subscribes to a MOOS variable (NUM_VALUE)    */
+/*    and finds its prime factors. It publishes a string    */
+/*    containing the original value, indices  indicating    */
+/*    the order in which it was received and calculated     */
+/*    the time taken to find its prime factors, its prime   */
+/*    factors and the user ID (here: affi).                 */
 /************************************************************/
 
 #include <iterator>
@@ -63,19 +69,32 @@ bool PrimeFactor2::OnNewMail(MOOSMSG_LIST &NewMail)
         if (msg.GetKey() == "NUM_VALUE") {
             total_received++;
             for (int i = 0; i < buffer_length; i++) {
-                if (num_values.at(i).orig_num) {
+                if (num_values.at(i).orig_num == 0) {
                     cout << fixed;
                     cout.precision(1);
                     cout << "MOOS Time is " << MOOSTime() << std::endl;
                     num_values.at(i).start_time     = MOOSTime();
-                    num_values.at(i).orig_num       = msg.GetDouble();
-                    num_values.at(i).current_num    = msg.GetDouble();
+                    
+                    // handle non-integer received values
+                    double num_in = trunc(msg.GetDouble());
+                    num_values.at(i).orig_num       = num_in;
+                    num_values.at(i).current_num    = num_in;
                     num_values.at(i).index_received = total_received;
                     break;
                 }
             }
         }
     }
+#if 0 // Keep these around just for template
+    string key   = msg.GetKey();
+    string comm  = msg.GetCommunity();
+    double dval  = msg.GetDouble();
+    string sval  = msg.GetString();
+    string msrc  = msg.GetSource();
+    double mtime = msg.GetTime();
+    bool   mdbl  = msg.IsDouble();
+    bool   mstr  = msg.IsString();
+#endif
     
     return(true);
 }
@@ -95,17 +114,20 @@ bool PrimeFactor2::OnConnectToServer()
 
 bool PrimeFactor2::Iterate()
 {
+    m_Comms.Notify("PRIME_RESULT",output_string);
+
     for (int i = 1; i < buffer_length; i++) {
         if(num_values.at(i).current_num == 1) {
+            num_values.at(i).end_time = MOOSTime();
             num_values.at(i).solve_time = num_values.at(i).end_time -
-            num_values.at(i).start_time;
-            output_string =
-            "orig=" + toString(num_values.at(i).orig_num) +
+                                            num_values.at(i).start_time;
+            output_string = "orig=" + toString(num_values.at(i).orig_num) +
             ",received=" + toString(num_values.at(i).index_calculated) +
             ",calculated=" + toString(num_values.at(i).solve_time) +
             ",primes=" + num_values.at(i).prime_string +
             ",username=" + num_values.at(i).username;
             
+            cout << output_string << endl;
             // publish entire string as "PRIME_RESULT"
             m_Comms.Notify("PRIME_RESULT",output_string);
             ClearNumberWithFeatures(num_values.at(i));
@@ -134,7 +156,7 @@ bool PrimeFactor2::OnStartUp()
             string original_line = *p;
             string param = stripBlankEnds(toupper(biteString(*p, '=')));
             string value = stripBlankEnds(*p);
-            
+            // never actually used
             if(param == "PRIME_RESULT")
                 outgoing_var = value;
         }
@@ -166,6 +188,7 @@ bool PrimeFactor2::IsPrime(int num) {
         if ((num/i) == 0)
             return false;
         else
+            cout << "Found a prime!" << endl;
             return true;
     }
 }

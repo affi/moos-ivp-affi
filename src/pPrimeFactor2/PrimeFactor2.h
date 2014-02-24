@@ -1,10 +1,15 @@
 /************************************************************/
-/*    NAME: Janille Maragh                                              */
-/*    ORGN: MIT                                             */
-/*    FILE: PrimeFactor2.h                                          */
-/*    DATE: February 19, 2014                                                */
-/*    SMRY:
- /************************************************************/
+/*    NAME: Janille Maragh                                  */
+/*    ORGN: MIT 2.680                                       */
+/*    FILE: PrimeFactor2.h                                  */
+/*    DATE: February 19, 2014                               */
+/*    SUMMARY: Subscribes to a MOOS variable (NUM_VALUE)    */
+/*    and finds its prime factors. It publishes a string    */
+/*    containing the original value, indices  indicating    */
+/*    the order in which it was received and calculated     */
+/*    the time taken to find its prime factors, its prime   */
+/*    factors and the user ID (here: affi).                 */
+/************************************************************/
 
 #ifndef PrimeFactor2_HEADER
 #define PrimeFactor2_HEADER
@@ -13,6 +18,7 @@
 #include <stdint.h>
 #include <vector>
 #include <stdlib.h>
+#include <math.h>
 
 using namespace std;
 
@@ -72,7 +78,6 @@ protected:
     
     // vector which contains all the "NumberWithFeatures"s
     // this vector will be the buffer
-    
     std::vector<struct NumberWithFeatures> num_values;
     
     int        calculations;    // total number of complete calculations/publications
@@ -95,7 +100,7 @@ private:
     // re-initializes a struct: NumberWithFeatures
     void       ClearNumberWithFeatures(struct NumberWithFeatures& item);
     
-private: // State variables
+private: 
     unsigned int m_iterations;
     double       m_timewarp;
 };

@@ -2,7 +2,8 @@
 /*    NAME: Janille Maragh                                              */
 /*    ORGN: MIT                                             */
 /*    FILE: PrimeFactorTester2.cpp                                        */
-/*    DATE:                                                 */
+/*    DATE: February 24, 2014   
+ */
 /************************************************************/
 
 #include <iterator>
@@ -16,15 +17,15 @@ using namespace std;
 
 PrimeFactorTester2::PrimeFactorTester2()
 {
-  received_string   = "";
-  prime_string_in   = "";
-  outgoing_var      = "";
-  prime_string_test = "";
-  outgoing_string   = "";
-  original_value    = 0;
-
-  m_iterations      = 0;
-  m_timewarp        = 1;
+    received_string   = "";
+    prime_string_in   = "";
+    outgoing_var      = "";
+    prime_string_test = "";
+    outgoing_string   = "";
+    original_value    = 0;
+    
+    m_iterations      = 0;
+    m_timewarp        = 1;
 }
 
 //---------------------------------------------------------
@@ -39,21 +40,32 @@ PrimeFactorTester2::~PrimeFactorTester2()
 
 bool PrimeFactorTester2::OnNewMail(MOOSMSG_LIST &NewMail)
 {
-  MOOSMSG_LIST::iterator p;
-  string temp_string;
-  for(p=NewMail.begin(); p!=NewMail.end(); p++) {
-    CMOOSMsg &msg = *p;
-
-    if (msg.GetKey() == "PRIME_RESULT") {
-      received_string = msg.GetString();
-      svector         = parseString(received_string,"'");
-      temp_string     = stripBlankEnds(biteString(svector[0],'='));
-      original_value  = strtoul(temp_string.c_str(),NULL,0);
-      prime_string_in = stripBlankEnds(biteString(svector[4],'='));
+    MOOSMSG_LIST::iterator p;
+    string temp_string;
+    for(p=NewMail.begin(); p!=NewMail.end(); p++) {
+        CMOOSMsg &msg = *p;
+        
+        if (msg.GetKey() == "PRIME_RESULT") {
+            received_string = msg.GetString();
+            received_string_copy = received_string;
+            
+            // parse incoming string, comma as a delimeter
+            vector<string> svector = parseString(received_string, ',');
+    
+//            svector         = parseString(received_string,",");
+            
+            // remove "orig=" from first item in svector
+            temp_string     = stripBlankEnds(biteString(svector[0],'='));
+            
+            // convert the original value (string) to unsigned long
+            original_value  = strtoul(temp_string.c_str(),NULL,0);
+            
+            // remove "primes:" to get only string of primes
+            prime_string_in = stripBlankEnds(biteString(svector[4],'='));
+        }
     }
-  }
 	
-   return(true);
+    return(true);
 }
 
 //---------------------------------------------------------
@@ -61,8 +73,8 @@ bool PrimeFactorTester2::OnNewMail(MOOSMSG_LIST &NewMail)
 
 bool PrimeFactorTester2::OnConnectToServer()
 {
-   RegisterVariables();
-   return(true);
+    RegisterVariables();
+    return(true);
 }
 
 //---------------------------------------------------------
@@ -71,17 +83,18 @@ bool PrimeFactorTester2::OnConnectToServer()
 
 bool PrimeFactorTester2::Iterate()
 {
-  PrimeFactorization(original_value);
-
-  if (prime_string_in == prime_string_test)
-    outgoing_string = received_string + ",valid=true";
-  else
-    outgoing_string = received_string + "'valid=false";
-  
-  m_Comms.Notify(outgoing_var, outgoing_string);
-
-  m_iterations++;
-  return(true);
+    cout << "Tester" << received_string_copy << endl;
+    Factorize(original_value);
+    
+    if (prime_string_in == prime_string_test)
+        outgoing_string = received_string_copy + ",valid=true";
+    else
+        outgoing_string = received_string_copy + "'valid=false";
+    
+    m_Comms.Notify("PRIME_RESULT_VALID", outgoing_string);
+    
+    m_iterations++;
+    return(true);
 }
 
 //---------------------------------------------------------
@@ -90,25 +103,25 @@ bool PrimeFactorTester2::Iterate()
 
 bool PrimeFactorTester2::OnStartUp()
 {
-  list<string> sParams;
-  m_MissionReader.EnableVerbatimQuoting(false);
-  if(m_MissionReader.GetConfiguration(GetAppName(), sParams)) {
-    list<string>::iterator p;
-    for(p=sParams.begin(); p!=sParams.end(); p++) {
-      string original_line = *p;
-      string param = stripBlankEnds(toupper(biteString(*p, '=')));
-      string value = stripBlankEnds(*p);
-      
-      if(param == "FOO") {
-	outgoing_var = value;
-      }
+    list<string> sParams;
+    m_MissionReader.EnableVerbatimQuoting(false);
+    if(m_MissionReader.GetConfiguration(GetAppName(), sParams)) {
+        list<string>::iterator p;
+        for(p=sParams.begin(); p!=sParams.end(); p++) {
+            string original_line = *p;
+            string param = stripBlankEnds(toupper(biteString(*p, '=')));
+            string value = stripBlankEnds(*p);
+            
+            if(param == "FOO") {
+                outgoing_var = value;
+            }
+        }
     }
-  }
-  
-  m_timewarp = GetMOOSTimeWarp();
-
-  RegisterVariables();	
-  return(true);
+    
+    m_timewarp = GetMOOSTimeWarp();
+    
+    RegisterVariables();
+    return(true);
 }
 
 //---------------------------------------------------------
@@ -116,39 +129,39 @@ bool PrimeFactorTester2::OnStartUp()
 
 void PrimeFactorTester2::RegisterVariables()
 {
-   m_Comms.Register("PRIME_RESULT", 0);
+    m_Comms.Register("PRIME_RESULT", 0);
 }
 
 //---------------------------------------------------------
-// Procedure: PrimeFactorization
+// Procedure: Factorize
 
-void PrimeFactorTester2::PrimeFactorization(uint64_t num) {
-  for (int i = 2; i < (num/2); i++) {
-    if ( (((num/2)/i) == 0) && (IsPrime(i)) ) {
-      prime_string_test += (toString(i) + ":");
+void PrimeFactorTester2::Factorize(uint64_t num) {
+    for (int i = 2; i < (num/2); i++) {
+        if ( (((num/2)/i) == 0) && (IsPrime(i)) ) {
+            prime_string_test += (toString(i) + ":");
+        }
     }
-  }
 }
 
 //---------------------------------------------------------
 // Procedure: IsPrime
 
 bool PrimeFactorTester2::IsPrime(int num) {
-  if ((num == 0) || (num == 1)) 
-    return false;
-  for (int i = 2; i < (num/2); i++) {
-    if ((num/i) == 0)
-      return false;
-    else
-      return true;
-  }
+    if ((num == 0) || (num == 1))
+        return false;
+    for (int i = 2; i < (num/2); i++) {
+        if ((num/i) == 0)
+            return false;
+        else
+            return true;
+    }
 }
 
 //---------------------------------------------------------
 // Procedure: to String
 
 string PrimeFactorTester2::toString(const int t) {
-  std::ostringstream ss;
-  ss << t;
-  return ss.str();
+    std::ostringstream ss;
+    ss << t;
+    return ss.str();
 }

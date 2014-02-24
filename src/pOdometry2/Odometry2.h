@@ -7,9 +7,12 @@
 
 #ifndef Odometry2_HEADER
 #define Odometry2_HEADER
+#include <math.h>
 
 //#include "MOOS/libMOOS/MOOSLib.h"
 #include "MOOS/libMOOS/Thirdparty/AppCasting/AppCastingMOOSApp.h"
+
+using namespace std;
 
 class Odometry2 : public AppCastingMOOSApp
 {
