@@ -20,11 +20,12 @@ void showSynopsis()
 {
   blk("SYNOPSIS:                                                       ");
   blk("------------------------------------                            ");
-  blk("  The pPrimeFactorTester2 application is used for               ");
-  blk("                                                                ");
-  blk("                                                                ");
-  blk("                                                                ");
-  blk("                                                                ");
+  blk("  This application parses the output from pPrimeFactor2         ");
+  blk("  for the number to be factorized and the string of primes it   ");
+  blk("  generated. This app then generates its own prime string and   ");
+  blk("  checks it against the prime string from pPrimeFactor2. It     ");
+  blk("  returns the string plus valid=true is they match and the      ");
+  blk("  returns the string plus valid=false otherwise.                ");
 }
 
 //----------------------------------------------------------------
@@ -87,21 +88,21 @@ void showInterfaceAndExit()
 {
   blk("                                                                ");
   blu("=============================================================== ");
-  blu("pPrimeFactorTester2 INTERFACE                                    ");
+  blu("pPrimeFactorTester2 INTERFACE                                   ");
   blu("=============================================================== ");
   blk("                                                                ");
   showSynopsis();
   blk("                                                                ");
   blk("SUBSCRIPTIONS:                                                  ");
   blk("------------------------------------                            ");
-  blk("  NODE_MESSAGE = src_node=alpha,dest_node=bravo,var_name=FOO,   ");
-  blk("                 string_val=BAR                                 ");
+  blk("  PRIME_RESULT = orig=6438,received=37,calculated=1.00267,      ");
+  blk("                 primes=29:37,username=affi                     ");
   blk("                                                                ");
   blk("PUBLICATIONS:                                                   ");
   blk("------------------------------------                            ");
-  blk("  Publications are determined by the node message content.      ");
-  blk("                                                                ");
-  exit(0);
+  blk("  PRIME_RESULT_VALID: orig=6438,received=37,calculated=1.00267, ");
+  blk("                 primes=29:37,username=affi,valid=true          ");
+    exit(0);
 }
 
 //----------------------------------------------------------------

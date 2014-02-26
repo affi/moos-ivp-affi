@@ -27,13 +27,17 @@ using namespace std;
 
 PrimeFactorTester2::PrimeFactorTester2()
 {
-    received_string   = "";
-    prime_string_in   = "";
-    outgoing_var      = "";
-    prime_string_test = "";
-    outgoing_string   = "";
-    original_value    = 0;
+    buffer_length = 100;
+    nums.resize(buffer_length);
     
+    for (int i = 0; i < buffer_length; i++) {
+        nums.at(i).original_value         = 0;
+        nums.at(i).current_num            = 0;
+        nums.at(i).string_in              = "";
+        nums.at(i).prime_string_in        = "";
+        nums.at(i).prime_string_test      = "";
+        nums.at(i).string_out             = "";
+    }
     m_iterations      = 0;
     m_timewarp        = 1;
 }
@@ -59,29 +63,31 @@ bool PrimeFactorTester2::OnNewMail(MOOSMSG_LIST &NewMail)
         
         if (msg.GetKey() == "PRIME_RESULT") {
             cout << "----- Start of check for PRIME_RESULT\n";
-            
-            received_string = msg.GetString();
-            if (!received_string.empty()) {
-                
-                // parse incoming string, comma as a delimeter
-                svector         = parseString(received_string,",");
-                
-                // remove "orig=" from first item in svector
-                temp_string     = stripBlankEnds(biteString(svector[0],'='));
-                cout << "original number " << svector[0] << endl;
-                
-                // convert the original value (string) to unsigned long
-                original_value  = strtoul(svector[0].c_str(),NULL,0);
-                cout << "new orig val " << original_value << endl;
-                
-                // remove "primes:" to get only string of primes
-                temp_string = stripBlankEnds(biteString(svector[3],'='));
-                
-                prime_string_in = svector[3];
+            for (int i = 0; i < buffer_length; i++) {
+                if (nums.at(i).original_value == 0) {
+                    nums.at(i).string_in = msg.GetString();
+                    
+                    // parse incoming string, comma as a delimeter
+                    svector         = parseString(nums.at(i).string_in,",");
+                    
+                    // remove "orig=" from first item in svector
+                    temp_string     = stripBlankEnds(biteString(svector[0],'='));
+                    
+                    // convert the original value (string) to unsigned long
+                    nums.at(i).original_value  = strtoul((svector[0]).c_str(),NULL,0);
+                    nums.at(i).current_num     = nums.at(i).original_value;
+                    
+                    // remove "primes:" to get only string of primes
+                    temp_string = stripBlankEnds(biteString(svector[3],'='));
+                    
+                    nums.at(i).prime_string_in = svector[3];
+                    cout << "primes in " << nums.at(i).prime_string_in << endl;
+                    
+                    break;
+                }
             }
         }
     }
-	
     return(true);
 }
 
@@ -100,18 +106,22 @@ bool PrimeFactorTester2::OnConnectToServer()
 
 bool PrimeFactorTester2::Iterate()
 {
-    Factorize(original_value);
-    
-    cout << "Prime string test: " << prime_string_test << endl;
-    cout << "Prime string in: " << prime_string_in << endl;
-    // if they match, string was valid, else it was not
-    if (prime_string_in == prime_string_test)
-        outgoing_string = received_string + ",valid=true";
-    else
-        outgoing_string = received_string + prime_string_test + ",valid=false";
-    
-    cout << "Prime string test: " << prime_string_test << endl;
-    m_Comms.Notify("PRIME_RESULT_VALID", outgoing_string);
+    for (int i = 1; i < buffer_length; i++) {
+        
+        Factorize(nums.at(i));
+        
+        if (nums.at(i).current_num == 1) {
+            
+            // if they match, string was valid, else it was not
+            if (nums.at(i).prime_string_in == nums.at(i).prime_string_test)
+                nums.at(i).string_out = nums.at(i).string_in + ",valid=true";
+            else
+                nums.at(i).string_out = nums.at(i).string_in + ",valid=false";
+            
+            m_Comms.Notify("PRIME_RESULT_VALID", nums.at(i).string_out);
+            ClearNumWithFeatures(nums.at(i));
+        }
+    }
     
     m_iterations++;
     return(true);
@@ -131,10 +141,6 @@ bool PrimeFactorTester2::OnStartUp()
             string original_line = *p;
             string param = stripBlankEnds(toupper(biteString(*p, '=')));
             string value = stripBlankEnds(*p);
-            
-            //            if(param == "FOO") {
-            //                outgoing_var = value;
-            //            }
         }
     }
     
@@ -155,15 +161,26 @@ void PrimeFactorTester2::RegisterVariables()
 //---------------------------------------------------------
 // Procedure: Factorize
 
-void PrimeFactorTester2::Factorize(uint64_t num) {
-    for (int i = 2; i < (num/2); i++) {
-        if ( (((num/2)/i) == 0) && (IsPrime(i)) ) {
-            if(!prime_string_test.empty()) {
-                prime_string_test += ":";
-            }
-            prime_string_test += toString(i);
-        }
+void PrimeFactorTester2::Factorize(struct NumWithFeatures& item) {
+    uint64_t i = 2;
+    
+    // increment i if not a factor of current_num
+    while (item.current_num%i != 0)
+        i++;
+    
+    
+    // is the factor prime?
+    if (IsPrime(i)) {
+        
+        // adds colon delimeter only if prime_string is not empty
+        if(!item.prime_string_test.empty())
+            item.prime_string_test += ":";
+        
+        item.prime_string_test += toString(i);
     }
+    
+    // update current_num by dividing it by i
+    item.current_num = (item.current_num)/i;
 }
 
 //---------------------------------------------------------
@@ -188,3 +205,17 @@ string PrimeFactorTester2::toString(const int t) {
     ss << t;
     return ss.str();
 }
+
+//---------------------------------------------------------
+// Procedure: ClearNumWithFeatures
+
+void PrimeFactorTester2::ClearNumWithFeatures(struct NumWithFeatures& item) {
+    
+    item.original_value         = 0;
+    item.current_num            = 0;
+    item.string_in              = "";
+    item.prime_string_in        = "";
+    item.prime_string_test      = "";
+    item.string_out             = "";
+}
+
