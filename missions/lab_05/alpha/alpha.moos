@@ -25,18 +25,18 @@ ProcessConfig = ANTLER
 {
   MSBetweenLaunches = 200
 
-  Run = MOOSDB		@ NewConsole = false
-  Run = pLogger         @ NewConsole = false
-  Run = uSimMarine	@ NewConsole = false
-  Run = pMarinePID	@ NewConsole = false
-  Run = pHelmIvP	@ NewConsole = false
-  Run = pMarineViewer	@ NewConsole = false
-  Run = uProcessWatch	@ NewConsole = false
-  Run = pNodeReporter	@ NewConsole = false
-  Run = uLoadWatch      @ NewConsole = false
-  //Run = iSay	        @ NewConsole = true
-  //Run = uXMS	        @ NewConsole = false
-  //Run = uTimerScript    @ NewConsole = false
+  Run = MOOSDB              @ NewConsole = false
+  Run = pLogger             @ NewConsole = false
+  Run = uSimMarine          @ NewConsole = false
+  Run = pMarinePID          @ NewConsole = false
+  Run = pHelmIvP            @ NewConsole = false
+  Run = pMarineViewer       @ NewConsole = false
+  Run = uProcessWatch       @ NewConsole = false
+  Run = pNodeReporter       @ NewConsole = false
+  Run = uLoadWatch          @ NewConsole = false
+  //Run = iSay              @ NewConsole = true
+  //Run = uXMS              @ NewConsole = false
+  //Run = uTimerScript      @ NewConsole = false
 }
 
 //------------------------------------------
@@ -200,16 +200,6 @@ ProcessConfig = pMarineViewer
   AppTick    = 4
   CommsTick  = 4
 
-  
-  left_context[return]	= RETURN_POINT = points = x=$(XPOS),y=$(YPOS)
-  left_context[return]  = VIEW_POINT = x=$(XPOS),y=$(YPOS),label=NewReturnPoint
-  left_context[return]  = RETURN = true
-
-//  left_context[view_poly]	= VIEW_POLYGON = format=radial,x=$(XPOS),y=$(YPOS),radius=10,pts=8,edge_size=1,label=mypoly
-
-//  left_context[view_both]	= VIEW_POINT = x=$(XPOS),y=$(YPOS),label=hello
-//  left_context[view_both]	= VIEW_POLYGON = format=radial,x=$(XPOS),y=$(YPOS),radius=10,pts=8,edge_size=1,label=mypoly
-
   tiff_file            = forrest19.tif
 
   set_pan_x            = -90
@@ -238,6 +228,15 @@ ProcessConfig = pMarineViewer
   left_context[survey-point] = DEPLOY=true
   left_context[survey-point] = MOOS_MANUAL_OVERIDE=false
   left_context[survey-point] = RETURN=false
+  
+  // return to chosen point after survey is complete
+  left_context[return-later]  = RETURN_UPDATES = points = $(XPOS),$(YPOS)
+  left_context[return-later]  = VIEW_POINT = x=$(XPOS),y=$(YPOS),label=NewReturnPoint
+
+  // return to chosen point immediately
+  left_context[return-now]  = RETURN_UPDATES = points = $(XPOS),$(YPOS)
+  left_context[return-now]  = VIEW_POINT = x=$(XPOS),y=$(YPOS),label=NewReturnPoint
+  left_context[return-now]  = RETURN = true
 
   right_context[return] = DEPLOY=true
   right_context[return] = MOOS_MANUAL_OVERIDE=false
