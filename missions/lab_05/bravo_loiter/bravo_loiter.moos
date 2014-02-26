@@ -7,7 +7,7 @@ ServerHost = localhost
 ServerPort = 9005
 Community  = alpha
 
-MOOSTimeWarp = 5
+MOOSTimeWarp = 10
 TERM_REPORTING = true
 
 // Forest Lake
@@ -76,6 +76,8 @@ ProcessConfig = uTimerScript
   event          = var=SAY_MOOS, val="say={seven}", time=1.75  
   event          = var=SAY_MOOS, val="say={eight}", time=2  
   event          = var=SAY_MOOS, val="say={nine}",  time=2.25  
+
+//  event		 = var=COMPLETE,val=true,time=150
   reset_max      = nolimit  
   reset_time     = all-posted
   delay_reset    = 0.25
@@ -153,7 +155,7 @@ ProcessConfig = pHelmIvP
   bhv_dir_not_found_ok = true
   ivp_behavior_dir = /Users/ddmikerb
 
-  behaviors  = alpha.bhv
+  behaviors  = bravo_loiter.bhv
   domain     = course:0:359:360
   domain     = speed:0:4:21
 }
