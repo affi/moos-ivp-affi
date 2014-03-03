@@ -26,7 +26,7 @@ ProcessConfig = ANTLER
   MSBetweenLaunches = 200
 
   Run = MOOSDB		@ NewConsole = false
-  Run = pLogger         @ NewConsole = false
+//  Run = pLogger         @ NewConsole = false
   Run = uSimMarine	@ NewConsole = false
   Run = pMarinePID	@ NewConsole = false
   Run = pHelmIvP	@ NewConsole = false
@@ -155,7 +155,7 @@ ProcessConfig = pHelmIvP
   bhv_dir_not_found_ok = true
   ivp_behavior_dir = /Users/ddmikerb
 
-  behaviors  = bravo_loiter.bhv
+  behaviors  = bravo_loiter_dbl.bhv
   domain     = course:0:359:360
   domain     = speed:0:4:21
 }

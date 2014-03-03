@@ -11,7 +11,6 @@ Behavior=BHV_Waypoint
   pwt        = 100
   condition  = RETURN = true
   condition  = DEPLOY = true
-  
   perpetual  = true
   endflag    = RETURN = false
   endflag    = DEPLOY = false
@@ -22,6 +21,7 @@ Behavior=BHV_Waypoint
      slip_radius = 8.0
           points = 0,0
 }
+
 //----------------------------------------------
 Behavior = BHV_Loiter
 {
@@ -29,13 +29,12 @@ Behavior = BHV_Loiter
   pwt		 = 100
   condition	 = DEPLOY = true
   condition	 = RETURN = false
-  condition  = LOITER_REGION = west
-  endflag	 = RETURN = true
+  condition  	 = LOITER_REGION = west
   endflag	 = LOITER_REGION = east
   duration	 = 150
-  speed		 = 2.5
-  updates    = 
+  perpetual 	 = true
 
+  speed		 = 2.5
   clockwise	 = false
   capture_radius = 4.0
   nm_radius	 = 15.0
@@ -50,9 +49,7 @@ Behavior = BHV_Loiter
   pwt		 = 100
   condition	 = DEPLOY = true
   condition	 = RETURN = false
-  condition  = LOITER_REGION = east
-  condition  = LOITER_REGION = west
-  endflag	 = RETURN = true
+  condition  	 = LOITER_REGION = east
   endflag	 = LOITER_REGION = west
   duration	 = 150
   speed		 = 2.5
