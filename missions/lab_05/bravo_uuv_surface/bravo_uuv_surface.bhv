@@ -8,36 +8,36 @@ initialize   ONSURFACE	    = false
 //----------------------------------------------
 Behavior = BHV_Waypoint
 {
-name            = waypt_return
-pwt             = 100
-condition       = RETURN = true
-condition       = DEPLOY = true
-condition    	= DEPLOY = false
-perpetual    	= true
-endflag         = RETURN = false
-speed           = 2.5
-capture_radius  = 2.0
-slip_radius 	= 8.0
-points      	= 0,0
+    name            = waypt_return
+    pwt             = 100
+    condition       = RETURN = true
+    condition       = DEPLOY = true
+    condition    	= DEPLOY = false
+    perpetual    	= true
+    endflag         = RETURN = false
+    speed           = 2.5
+    capture_radius  = 2.0
+    slip_radius 	= 8.0
+    points      	= 0,0
 }
 
 //----------------------------------------------
 Behavior = BHV_Loiter
 {
-name            = loiter1
-pwt             = 100
-condition       = DEPLOY = true
-condition       = RETURN = false
-condition       = LOITER_REGION = west
-condition       = ONSURFACE = false
-endflag         = LOITER_REGION = east
-duration        = 150
-perpetual       = true
-speed           = 2.5
-clockwise       = false
-capture_radius  = 4.0
-nm_radius       = 15.0
-polygon         = format=radial, x=100, y=-75, radius=30, pts=8, snap=1
+    name            = loiter1
+    pwt             = 100
+    condition       = DEPLOY = true
+    condition       = RETURN = false
+    condition       = LOITER_REGION = west
+    condition       = ONSURFACE = false
+    endflag         = LOITER_REGION = east
+    duration        = 150
+    perpetual       = true
+    speed           = 2.5
+    clockwise       = false
+    capture_radius  = 4.0
+    nm_radius       = 15.0
+    polygon         = format=radial, x=100, y=-75, radius=30, pts=8, snap=1
 }
 
 
@@ -78,57 +78,57 @@ polygon	 = format=radial, x=160, y=-50, radius=20, pts=8, snap=1
 //----------------------------------------------
 Behavior = BHV_ConstantDepth
 {
-name		  = depth2
-pwt		      = 100
-condition	  = DEPLOY = true
-condition	  = RETURN = false
-condition	  = LOITER_REGION = east
-condition	  = ONSURFACE = false
-endflag	      = LOITER_REGION = west
-duration	  = no-time-limit
-depth		  = 10
+    name		  = depth2
+    pwt		      = 100
+    condition	  = DEPLOY = true
+    condition	  = RETURN = false
+    condition	  = LOITER_REGION = east
+    condition	  = ONSURFACE = false
+    endflag	      = LOITER_REGION = west
+    duration	  = no-time-limit
+    depth		  = 10
 }
 
 //----------------------------------------------
 //Behavior = BHV_ConstantDepth
 {
-name		  = depth_surface
-pwt		  = 100
-condition	  = DEPLOY = true
-//  condition	  = RETURN = false
-condition	  = ONSURFACE = true
-//  endflag	  = ONSURFACE = false
-duration	  = no-time-limit
-depth 	  = 0
-//perpetual	  = true
+    name		  = depth_surface
+        pwt		  = 100
+    condition	  = DEPLOY = true
+    //  condition	  = RETURN = false
+    condition	  = ONSURFACE = true
+    //  endflag	  = ONSURFACE = false
+    duration	  = no-time-limit
+    depth 	  = 0
+    //perpetual	  = true
 }
 
 //----------------------------------------------
 Behavior = BHV_ConstantSpeed
 {
-name		  = nullspeed
-//condition	  = DEPLOY = true
-condition	  = ONSURFACE = true
-// perpetual	  = true
-//  endflag	  = ONSURFACE = false
-speed		  = 0
+    name            = nullspeed
+    //condition     = DEPLOY = true
+    condition       = ONSURFACE = true
+    // perpetual	= true
+    //  endflag     = ONSURFACE = false
+    speed           = 0
 }
 
 //----------------------------------------------
-//Behavior = BHV_Timer
+Behavior = BHV_Timer
 {
-name		  = timed_submerged
-condition	  = DEPLOY = true
-condition	  = RETURN = false
-condition	  = ONSURFACE = false
-duration	  = 200
-endflag	  = ONSURFACE = true
-perpetual	  = true
+name            = timed_submerged
+condition       = DEPLOY = true
+condition       = RETURN = false
+condition       = ONSURFACE = false
+duration        = 200
+endflag         = ONSURFACE = true
+perpetual       = true
 duration_status = TIMED_UNDERWATER
 }
 
 //----------------------------------------------
-//Behavior = BHV_Timer
+Behavior = BHV_Timer
 {
 name            = timed_surface
 condition	  = DEPLOY = true
