@@ -17,19 +17,28 @@ using namespace std;
 
 CommunicationAngle::CommunicationAngle()
 {
-    xo          = 0;
-    yo          = 0;
-    zo          = 0;
-    xc          = 0;
-    yc          = 0;
-    zc          = 0;
-    g           = 9.81;
-    co          = 1480;
-    deltatheta  = 0.00001;
-    pi          = 3.14159265;
+    xo                  = 0;
+    yo                  = 0;
+    zo                  = 0;
+    xc                  = 0;
+    yc                  = 0;
+    zc                  = 0;
+    xt                  = 0;
+    yt                  = 0;
+    zt                  = 0;
     
-    m_iterations = 0;
-    m_timewarp   = 1;
+    g                   = 9.81;
+    co                  = 1480;
+    deltatheta          = 0.00001;
+    pi                  = 3.14159265;
+    
+    theta0              = 0;
+    theta               = 0;
+    transmission_loss   = 0;
+    R                   = 0;
+    
+    m_iterations        = 0;
+    m_timewarp          = 1;
 }
 
 //---------------------------------------------------------
@@ -103,6 +112,25 @@ bool CommunicationAngle::OnConnectToServer()
 
 bool CommunicationAngle::Iterate()
 {
+    CalcElevAngle(xo, yo, zo, xc, yc, zc, R, theta0);
+    transmission_loss = CalcTransmissionLoss(theta, theta0, zo, R);
+    
+    std::string acoustic_path = "elev_angle=" + toString(theta0) +
+    ",transmission_loss=" + toString(transmission_loss) +
+    ",id=affi@mit.edu";
+    
+    std::string connectivity_loc = "x=" + toString(xt) +
+    ",y=" + toString(yt) +
+    ",depth=" + toString(zt) +
+    ",id=affi@mit.edu";
+    
+    if (!acoustic_path.empty()) {
+        m_Comms.Notify("ACOUSTIC_PATH",acoustic_path);
+    }
+    if (!connectivity_loc.empty()) {
+        m_Comms.Notify("CONNECTIVITY_LOCATION",connectivity_loc);
+    }
+    
     m_iterations++;
     return(true);
 }
@@ -158,7 +186,7 @@ void CommunicationAngle::RegisterVariables()
 
 //---------------------------------------------------------
 // Procedure: CalcElevAngle
-double CommunicationAngle::CalcElevAngle(double xo, double yo, double zo, double xc, double yc, double zc)
+void CommunicationAngle::CalcElevAngle(double xo, double yo, double zo, double xc, double yc, double zc, double& R, double& theta0)
 {
     // distance between OS and collaborator
     double dist = pow((pow((xo - xc),2),pow((yo - yc),2)),0.5);
@@ -177,13 +205,13 @@ double CommunicationAngle::CalcElevAngle(double xo, double yo, double zo, double
     // r-distance between centre of dist and centre of circle
     double x2 = height*tan(beta);
     // radius of circles
-    double R = pow((pow((x1+x2),2)),0.5);
+    R = pow((pow((x1+x2),2)),0.5);
     // angle between dist and line btwn centre of circle and OS
     double delta = acos(dist/(2*R));
     // angle of elevation
-    double theta0 = 90 + beta - delta;
+    theta0 = 90 + beta - delta;
     
-    return theta0;
+    //return theta0;
     
 }
 
@@ -216,4 +244,14 @@ double CommunicationAngle::rCalc (double R, double theta, double theta0)
 {
     double r = R*sin(theta0) - R*cos(theta);
     return r;
+}
+
+//---------------------------------------------------------
+// Procedure: toString
+
+std::string CommunicationAngle::toString(const double t) {
+    // open output string stream, add argument, convert to string
+    std::ostringstream ss;
+    ss << t;
+    return ss.str();
 }
