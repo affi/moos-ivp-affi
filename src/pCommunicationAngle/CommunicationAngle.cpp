@@ -1,8 +1,15 @@
 /************************************************************/
-/*    NAME: Janille                                              */
+/*    NAME: Janille Maragh                                  */
 /*    ORGN: MIT                                             */
-/*    FILE: CommunicationAngle.cpp                                        */
-/*    DATE:                                                 */
+/*    FILE: CommunicationAngle.cpp                          */
+/*    DATE: Wednesday, March 5, 2013                        */
+/*    SMRY: This app reads in the current 3D position of    */
+/*          own ship and the current 3D position of the     */
+/*          collaborator ship. It then calculates the       */
+/*          angle of elevation of the communication ray,    */
+/*          which begins at own ship and ends that the      */
+/*          collaboration ship. It also calculates the      */
+/*          transmission loss during communication.         */
 /************************************************************/
 
 #include <iterator>
@@ -190,24 +197,34 @@ void CommunicationAngle::CalcElevAngle(double xo, double yo, double zo, double x
 {
     // distance between OS and collaborator
     double dist = pow((pow((xo - xc),2),pow((yo - yc),2)),0.5);
+    
     // vertical distance (z) between OS and collaborator
     double delta_z = zo - zc;
+    
     // angle between horizon and dist
     double beta = asin(delta_z/dist);
+    
     // r-distance between OS and centre of dist
     double x1 = 0.5*dist*cos(beta);
+    
     // z-distance between centre of circle and OS
     double H = zo + (co/g);
+    
     // z-distance between OS and centre of dist
     double h = 0.5*dist*sin(beta);
+    
     // z-distance between centre of circle and centre of dist
     double height = H + h;
+    
     // r-distance between centre of dist and centre of circle
     double x2 = height*tan(beta);
+    
     // radius of circles
     R = pow((pow((x1+x2),2)),0.5);
+    
     // angle between dist and line btwn centre of circle and OS
     double delta = acos(dist/(2*R));
+    
     // angle of elevation
     theta0 = 90 + beta - delta;
     
@@ -221,15 +238,20 @@ double CommunicationAngle::CalcTransmissionLoss(double theta, double theta0, dou
 {
     // arc length
     double s = R*(theta0 - theta);
+    
     // speed of sound at z = arc length
     double cs = 1480 + g*s;
+    
     // speed of sound at OS
     double czo = 1480 + g*zo;
+    
     // relative cross-sectional area of ray tube
     double J = ((rCalc(R,theta,theta0))/(sin(theta)))*(((rCalc(R,theta+deltatheta,theta0)-rCalc(R,theta,theta0)))/(deltatheta));
+    
     // pressure field amplitude
     double p1 = 1/(4*pi);
     double ps = (1/(4*pi))*pow(abs((cs*cos(theta0))/(czo*J)),0.5);
+    
     // transmission loss
     double TL = -20*log10(ps/p1);
     

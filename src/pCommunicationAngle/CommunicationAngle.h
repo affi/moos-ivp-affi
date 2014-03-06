@@ -1,8 +1,15 @@
 /************************************************************/
-/*    NAME: Janille                                              */
+/*    NAME: Janille Maragh                                  */
 /*    ORGN: MIT                                             */
-/*    FILE: CommunicationAngle.h                                          */
-/*    DATE:                                                 */
+/*    FILE: CommunicationAngle.h                            */
+/*    DATE: Wednesday, March 5, 2013                        */
+/*    SMRY: This app reads in the current 3D position of    */
+/*          own ship and the current 3D position of the     */
+/*          collaborator ship. It then calculates the       */
+/*          angle of elevation of the communication ray,    */
+/*          which begins at own ship and ends that the      */
+/*          collaboration ship. It also calculates the      */
+/*          transmission loss during communication.         */
 /************************************************************/
 
 #ifndef CommunicationAngle_HEADER
@@ -39,7 +46,7 @@ class CommunicationAngle : public CMOOSApp
     double yt;
     double zt;
     
-    // characteristic values
+    // characteristic values, as described in instructions
     double theta0;
     double theta;
     double transmission_loss;
@@ -52,7 +59,7 @@ class CommunicationAngle : public CMOOSApp
     double pi;
     
     // my functions
-    void CalcElevAngle(double xo, double yo, double zo, double xc, double yc, double zc, double& R, double& theta0)
+    void CalcElevAngle(double xo, double yo, double zo, double xc, double yc, double zc, double& R, double& theta0);
     double CalcTransmissionLoss(double theta, double theta0, double zo, double R);
     double rCalc(double R, double theta, double theta0);
     std::string toString(const double t);
