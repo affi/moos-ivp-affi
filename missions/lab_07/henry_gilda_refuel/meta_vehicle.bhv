@@ -35,6 +35,20 @@ set MODE = REFUELING {
 }
 
 //----------------------------------------------
+Behavior = BHV_Timer
+{
+  name      = refuel_timer
+  pwt	    = 100
+  condition = REFUEL_LOC_REACHED = true
+  condition = LOITER = false
+  duration  = 60
+  endflag   = LOITER = true
+  endflag   = REFUEL_LOC_REACHED = false
+  endflag   = REFUEL_NEEDED = false
+}
+
+
+//----------------------------------------------
 Behavior = BHV_Loiter
 {
   name      = loiter
@@ -105,19 +119,6 @@ center_activate = true
      swing_time = 7
       visual_hints = vertex_size=0, edge_color=gray50
 
-}
-
-//----------------------------------------------
-Behavior = BHV_Timer
-{
-  name      = refuel_timer
-  pwt	    = 100
-  condition = REFUEL_LOC_REACHED = true
-  condition = LOITER = false
-  duration  = 60
-  endflag   = LOITER = true
-  endflag   = REFUEL_LOC_REACHED = false
-  endflag   = REFUEL_NEEDED = false
 }
 
 //----------------------------------------------
