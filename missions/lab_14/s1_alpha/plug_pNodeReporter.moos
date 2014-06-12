@@ -1,0 +1,27 @@
+//------------------------------------------
+// pNodeReporter config block
+
+ProcessConfig = pNodeReporter
+{
+  MaxAppTick    = 2
+  AppTick       = 2
+  CommsTick     = 2
+
+  platform_type   = KAYAK
+  platform_length = 4
+}
+
+
+// This block is here in conjunction with the uTermCommand
+// documentation to demonstrate functionality of that tool.
+// This mission may be alternately
+
+ProcessConfig = uTermCommandFoo
+{
+  cmd  = override_true  -->  MOOS_MANUAL_OVERRIDE --> true
+  cmd  = override_false -->  MOOS_MANUAL_OVERRIDE --> false
+  cmd  = deploy_true    -->  DEPLOY --> true
+  cmd  = deploy_false   -->  DEPLOY --> false
+  cmd  = return_true    -->  RETURN --> true
+  cmd  = return_false   -->  RETURN --> false
+}
