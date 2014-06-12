@@ -64,6 +64,7 @@ ProcessConfig = uFldShoreBroker
   bridge   = src=UHZ_HAZARD_REPORT_$V,    alias=UHZ_HAZARD_REPORT
   bridge   = src=UHZ_DETECTION_REPORT_$V, alias=UHZ_DETECTION_REPORT
   bridge   = src=HAZARDSET_REQUEST_ALL,   alias=HAZARDSET_REQUEST
+  
 }
 
 //--------------------------------------------------
@@ -74,7 +75,7 @@ ProcessConfig = uFldNodeComms
   AppTick       = 2
   CommsTick     = 2
 
-  comms_range          = 100
+  comms_range          = 1000
   critical_range       = 25
   min_msg_interval     = 60
   max_msg_length       = 100

@@ -9,10 +9,11 @@ SET(SRC
   main.cpp
 )
 
-ADD_EXECUTABLE(uFldHazardMgr ${SRC})
+ADD_EXECUTABLE(uFldHazardMgrX ${SRC})
 
-TARGET_LINK_LIBRARIES(uFldHazardMgr
+TARGET_LINK_LIBRARIES(uFldHazardMgrX
    ${MOOS_LIBRARIES}
+   ufield
    ufld_hazards
    geometry
    apputil

@@ -1,5 +1,5 @@
 ##############################################################################
-# FILE:        moos-ivp-extend/src/CMakeLists.txt
+# FILE:        moos-ivp-affi-2680/trunk/src/CMakeLists.txt
 # DATE:        2010/09/07
 # DESCRIPTION: CMakeLists.txt file for the moos-ivp-extend source directory
 ##############################################################################
@@ -14,13 +14,17 @@ INCLUDE_DIRECTORIES(${LOCAL_LIBRARY_DIRS})
 #============================================================================
 # List the subdirectories to build...
 #============================================================================
-ADD_SUBDIRECTORY(lib_behaviors-test)
+ADD_SUBDIRECTORY(lib_behaviors-affi)
+#ADD_SUBDIRECTORY(lib_behaviors-test)
 ADD_SUBDIRECTORY(pXRelayTest)
 ADD_SUBDIRECTORY(pExampleApp)
 ADD_SUBDIRECTORY(pOdometry2)
 ADD_SUBDIRECTORY(pPrimeFactor2)
 ADD_SUBDIRECTORY(pPrimeFactorTester2)
 ADD_SUBDIRECTORY(pCommunicationAngle)
+ADD_SUBDIRECTORY(pPointAssign)
+ADD_SUBDIRECTORY(pGenPath)
+ADD_SUBDIRECTORY(uFldHazardMgrX)
 ##############################################################################
 #                           END of CMakeLists.txt
 ##############################################################################
