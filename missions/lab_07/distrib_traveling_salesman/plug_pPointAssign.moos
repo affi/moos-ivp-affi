@@ -1,0 +1,9 @@
+ProcessConfig = pPointAssign {
+
+      AppTick	       = 4
+      CommsTick	       = 4
+
+      vname	       = GILDA,HENRY
+      assign_by_region = false
+      region	       = -25,200,-175,-25
+}

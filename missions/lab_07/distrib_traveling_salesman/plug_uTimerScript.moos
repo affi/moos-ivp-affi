@@ -1,0 +1,16 @@
+//---------------------------------------------------------
+// pShare Config Block  (Created from Plugin)
+
+ProcessConfig = uTimerScript
+{
+  AppTick    = 2
+  CommsTick  = 2
+
+  rand_var = varname=RAND_X, min=-25, max=200, key=at_post
+  rand_var = varname=RAND_Y, min=-175, max=-25, key=at_post
+
+  EVENT	   = var=VISIT_POINT, val="firstpoint", time=0
+  EVENT	   = var=VISIT_POINT, val="x=$[RAND_X],y=$[RAND_Y],id=$[TCOUNT]", time=0, amt=100 
+  EVENT	   = var=VISIT_POINT, val="lastpoint", time=0
+}
+
