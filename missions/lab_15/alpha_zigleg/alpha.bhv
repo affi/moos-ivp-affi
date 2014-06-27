@@ -8,8 +8,8 @@ Behavior = BHV_ZigLeg
 {
   name	= zigleg
   
-  zig_angle	= 45
-  zig_duration  = 10
+  zig_angle	= -45
+  zig_duration  = 30
   ipf_type	= zaic
 
 }
