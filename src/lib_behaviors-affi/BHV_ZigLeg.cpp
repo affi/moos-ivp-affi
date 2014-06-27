@@ -28,6 +28,7 @@ IvPBehavior(domain)
     m_zig_duration  = 10;
     m_zigleg        = false;
     m_ipf_type      = "zaic";
+    m_received = false;
     
     // Provide a default behavior name
     IvPBehavior::setParam("name", "defaultname");
@@ -143,13 +144,15 @@ IvPFunction* BHV_ZigLeg::onRunState()
     UpdateStateVariables();
     
     double curr_time = getBufferCurrTime();
-    
-//    if ((curr_time - m_wpt_time) >= 5.0)
-//        m_zigleg = true;
+    if (m_received) {
+        if ((curr_time - m_wpt_time) >= 10.0) {
+            m_received = false;
+            m_zigleg = true;
+        }
+    }
     
     //LET'S SEND A ZIG COMMAND
     if (m_zigleg) {
-        //double curr_time = getBufferCurrTime();
         if(m_ipf_type == "zaic")
             ipf = buildFunctionWithZAIC();
         else
@@ -157,7 +160,8 @@ IvPFunction* BHV_ZigLeg::onRunState()
         
         if(ipf == 0)
             postWMessage("Problem Creating the IvP Function");
-        if ((curr_time - m_wpt_time) >= (5.0 + m_zig_duration))
+        
+        if ((curr_time - m_wpt_time) >= (10.0 + m_zig_duration))
             m_zigleg = false;
     }
     
@@ -186,7 +190,8 @@ void BHV_ZigLeg::UpdateStateVariables() {
     int new_index   = (int)getBufferDoubleVal("WPT_INDEX", ok4);
     
     if((new_index != m_wpt_index) && (new_index != -1)) {
-        m_zigleg = true;
+        //m_zigleg = false;
+        m_received = true;
         m_wpt_time = getBufferCurrTime();
     }
     

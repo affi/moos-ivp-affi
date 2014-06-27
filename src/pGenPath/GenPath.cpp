@@ -1,7 +1,7 @@
 /************************************************************/
-/*    NAME: Janille Maragh                                              */
+/*    NAME: Janille Maragh                                  */
 /*    ORGN: MIT                                             */
-/*    FILE: GenPath.cpp                                        */
+/*    FILE: GenPath.cpp                                     */
 /*    DATE:                                                 */
 /************************************************************/
 
@@ -17,13 +17,14 @@ using namespace std;
 GenPath::GenPath()
 {
     assign_by_region = false;
-    m_bufferlength  = 100;
-    
-    m_points.resize(m_bufferlength);
-    for (int i = 0; i++; i<m_bufferlength) {
-        m_points.at(i).id = -1;
-    }
-    m_points_ordered.resize(m_bufferlength);
+    //    m_bufferlength  = 100;
+    //
+    //    m_points.resize(m_bufferlength);
+    //    for (int i = 0; i++; i<m_bufferlength) {
+    //        m_points.at(i).id = -1;
+    //    }
+    //    m_points_ordered.resize(m_bufferlength);
+    m_tour_again = false;
     
     m_iterations = 0;
     m_timewarp   = 1;
@@ -48,32 +49,38 @@ bool GenPath::OnNewMail(MOOSMSG_LIST &NewMail)
         
         if (msg.GetKey() == "VISIT_POINT") {
             if (msg.GetString() == "firstpoint") {
-                m_points.clear();
-                update_str = "";
+                for (int i = 0; i < m_points.size(); i++) {
+                    m_points.at(i).erase();
+                    update_str = "";
+                }
+                //m_points.clear();
+                //                update_str = "";
             }
             else if (msg.GetString() == "lastpoint") {
+                all_points_received = true;
                 update_str = "";
             }
             else {
-                for (int i = 0; i < m_bufferlength; i++) {
-                    if (m_points.at(i).id == -1) {      // if struct is empty
-                        
-                        // parse incoming string, comma as a delimeter
-                        svector         = parseString(msg.GetString(),",");
-                        
-                        // remove "x=" etc. from each item in svector, store in struct
-                        temp_string         = stripBlankEnds(biteString(svector[0],'='));
-                        m_points.at(i).x    = atof(svector[0].c_str());
-                        
-                        temp_string         = stripBlankEnds(biteString(svector[1],'='));
-                        m_points.at(i).y    = atof(svector[1].c_str());
-                        
-                        temp_string         = stripBlankEnds(biteString(svector[2],'='));
-                        m_points.at(i).id   = atof(svector[2].c_str());
-                        
-                        break;
-                    }
-                }
+                Point newPoint;
+                
+                // parse incoming string, comma as a delimeter
+                svector         = parseString(msg.GetString(),",");
+                
+                // remove "x=" etc. from each item in svector, store in struct
+                temp_string         = stripBlankEnds(biteString(svector[0],'='));
+                newPoint.x    = atof(svector[0].c_str());
+                
+                temp_string         = stripBlankEnds(biteString(svector[1],'='));
+                newPoint.y    = atof(svector[1].c_str());
+                
+                temp_string         = stripBlankEnds(biteString(svector[2],'='));
+                newPoint.id   = atof(svector[2].c_str());
+                m_points.push_back(newPoint);
+            }
+        }
+        else if (msg.GetKey() == "REGENERATE") {
+            if ((msg.GetString() == "true") || (msg.GetString() == "TRUE")) {
+                m_tour_again = true;
             }
         }
         
@@ -105,31 +112,38 @@ bool GenPath::OnConnectToServer()
 
 bool GenPath::Iterate()
 {
-    double shortest_dist    = -1;
-    int closest_index       = -1;
-    double dist;
+    double  shortest_dist = -1;
+    int     closest_index = -1;
+    double  dist;
     
-    for (int i = 0; i < m_bufferlength; i++){
-        if (m_points.at(i).id != -1) {
+    // find the closest waypoint in the list
+    if (m_points.size() != 0) {
+        for (int i = 0; i < m_points.size(); i++){
             dist = pow((pow((m_points.at(i).x - m_osx), 2) + \
                         pow((m_points.at(i).y - m_osy), 2)), 0.5);
             
             if (shortest_dist == -1) {
                 shortest_dist = dist;
                 closest_index = i;
-                ResetPoint(m_points.at(i));
             }
             
             else if (dist < shortest_dist) {
                 shortest_dist = dist;
                 closest_index = i;
-                ResetPoint(m_points.at(i));
             }
         }
     }
     
-    m_seglist.add_vertex(m_points.at(closest_index).x, m_points.at(closest_index).y);
-    update_str += m_seglist.get_spec();
+    // add point to ordered list, erase from original list
+    m_points_ordered.push_back(m_points.at(closest_index));
+    m_points.erase(m_points.begin() + closest_index);
+    
+    for (int i = 0; i < m_points_ordered.size(); i++)
+        m_seglist.add_vertex(m_points.at(i).x, m_points.at(i).y);
+    
+    if (m_points.size() == 0)
+        update_str += m_seglist.get_spec();
+    
     m_Comms.Notify("UPDATES_VAR",update_str);
     
     m_iterations++;
@@ -171,7 +185,11 @@ bool GenPath::OnStartUp()
 
 void GenPath::RegisterVariables()
 {
-    m_Comms.Register("FOOBAR", 0);
+    m_Comms.Register("VISIT_POINT", 0);
+    m_Comms.Register("WPT_INDEX", 0);
+    m_Comms.Register("NAV_X", 0);
+    m_Comms.Register("NAV_Y", 0);
+    m_Comms.Register("REGENERATE", 0);
 }
 
 //---------------------------------------------------------

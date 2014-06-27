@@ -1,7 +1,7 @@
 /************************************************************/
-/*    NAME: Janille Maragh                                              */
+/*    NAME: Janille Maragh                                  */
 /*    ORGN: MIT                                             */
-/*    FILE: GenPath.h                                          */
+/*    FILE: GenPath.h                                       */
 /*    DATE:                                                 */
 /************************************************************/
 
@@ -28,7 +28,6 @@ protected:
     void RegisterVariables();
     
     
-    
 private: // Configuration variables
     struct Point {
         bool    empty;
@@ -42,7 +41,9 @@ private: // Configuration variables
     std::vector<struct Point> m_points_ordered;
     
     bool                        assign_by_region;
-    int                         m_bufferlength;
+    bool                        all_points_received;
+    bool            m_tour_again;
+    //int                         m_bufferlength;
     XYSegList                   m_seglist;
     
     // own-ship information
@@ -55,7 +56,6 @@ private: // Configuration variables
     std::string                 update_str;
     
     void ResetPoint(struct Point& point);
-
     
     
 private: // State variables

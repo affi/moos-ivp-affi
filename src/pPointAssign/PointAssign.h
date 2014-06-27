@@ -1,7 +1,7 @@
 /************************************************************/
-/*    NAME: Janille Maragh                                              */
+/*    NAME: Janille Maragh                                  */
 /*    ORGN: MIT                                             */
-/*    FILE: PointAssign.h                                          */
+/*    FILE: PointAssign.h                                   */
 /*    DATE:                                                 */
 /************************************************************/
 

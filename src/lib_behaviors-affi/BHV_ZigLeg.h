@@ -13,6 +13,7 @@
 #include "XYRangePulse.h"
 #include "ZAIC_PEAK.h"
 
+
 class BHV_ZigLeg : public IvPBehavior {
 public:
     BHV_ZigLeg(IvPDomain);
@@ -43,6 +44,7 @@ protected: // State variables
     double       m_heading;     // OS
     double       m_wpt_time;
     int          m_wpt_index;
+    bool         m_received;
     
     // for the zig
     bool         m_zigleg;
