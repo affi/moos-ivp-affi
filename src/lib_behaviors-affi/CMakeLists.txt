@@ -78,3 +78,19 @@ TARGET_LINK_LIBRARIES(BHV_ZigLeg
    geometry 
    ${SYSTEM_LIBS} )
 
+#--------------------------------------------------------
+#                                      	     BHV_MyCircle
+#--------------------------------------------------------
+ADD_LIBRARY(BHV_MyCircle SHARED 
+   BHV_MyCircle.cpp)
+TARGET_LINK_LIBRARIES(BHV_MyCircle
+   helmivp
+   behaviors 
+   ivpbuild 
+   logic 
+   ivpcore 
+   bhvutil 
+   mbutil 
+   geometry 
+   ${SYSTEM_LIBS} )
+
