@@ -17,9 +17,18 @@ WIDTH2=120
 LANE_WIDTH1=20
 LANE_WIDTH2=20
 DEGREES1=270
-#270
 DEGREES2=0
-#0
+
+CENTRE_X1=50
+CENTRE_X2=50
+CENTRE_Y1=-100
+CENTRE_Y2=-100
+RADIUS1=80
+RADIUS2=50
+NUM_SEGMENTS1=24
+NUM_SEGMENTS2=12
+SPEED1=3
+SPEED2=3
 
 for ARGI; do
     #help:
@@ -101,7 +110,8 @@ nsplug meta_vehicle.moos targ_$VNAME1.moos -f WARP=$TIME_WARP  \
 nsplug meta_vehicle.bhv targ_$VNAME1.bhv -f VNAME=$VNAME1      \
     START_POS=$START_POS1 SURVEY_X=$SURVEY_X SURVEY_Y=$SURVEY_Y \
         HEIGHT=$HEIGHT1   WIDTH=$WIDTH1 LANE_WIDTH=$LANE_WIDTH1 \
-        DEGREES=$DEGREES1
+        DEGREES=$DEGREES1 CENTRE_X=$CENTRE_X1 CENTRE_Y=$CENTRE_Y2 \
+        RADIUS=$RADIUS1 NUM_SEGMENTS=$NUM_SEGMENTS1 SPEED=$SPEED1
 
 #start second vehicle:                                                                                                   
 nsplug meta_vehicle.moos targ_$VNAME2.moos -f WARP=$TIME_WARP  \
@@ -113,7 +123,8 @@ nsplug meta_vehicle.moos targ_$VNAME2.moos -f WARP=$TIME_WARP  \
 nsplug meta_vehicle.bhv targ_$VNAME2.bhv -f VNAME=$VNAME2      \
     START_POS=$START_POS2 SURVEY_X=$SURVEY_X SURVEY_Y=$SURVEY_Y \
         HEIGHT=$HEIGHT2   WIDTH=$WIDTH2 LANE_WIDTH=$LANE_WIDTH2 \
-        DEGREES=$DEGREES2
+        DEGREES=$DEGREES2 CENTRE_X=$CENTRE_X2 CENTRE_Y=$CENTRE_Y2 \
+        RADIUS=$RADIUS2 NUM_SEGMENTS=$NUM_SEGMENTS2 SPEED=$SPEED2
 
 
 if [ ${JUST_MAKE} = "yes" ] ; then

@@ -24,9 +24,27 @@ set MODE = SURVEYING {
   SURVEY = true
   RETURN = false
 }
+//----------------------------------------------
+Behavior = BHV_MyCircle
+{
+  name = circle
+  pwt  = 100
+
+  condition 	= MODE==SURVEYING
+  activeflag   	= SURVEY_UNDERWAY = true
+  inactiveflag 	= SURVEY_UNDERWAY = false
+  endflag   	= RETURN = true
+
+
+  CENTRE_X	= $(CENTRE_X)
+  CENTRE_Y	= $(CENTRE_Y)
+  RADIUS	= $(RADIUS)
+  NUM_SEGMENTS	= $(NUM_SEGMENTS)
+  SPEED		= $(SPEED)
+}
 
 //----------------------------------------------
-Behavior = BHV_Waypoint
+//Behavior = BHV_Waypoint
 { 
   name         = waypt_survey
   pwt          = 100
@@ -70,7 +88,7 @@ Behavior = BHV_Waypoint
 }
 
 //----------------------------------------------
-Behavior = BHV_OpRegion
+//Behavior = BHV_OpRegion
 {
   name       = opregion
   pwt        = 100
@@ -84,7 +102,7 @@ Behavior = BHV_OpRegion
 }
 
 //------------------------------------------------
-Behavior = BHV_AvoidCollision
+//Behavior = BHV_AvoidCollision
 {
   name       = avdcollision_
   pwt        = 200
