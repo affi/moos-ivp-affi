@@ -1,26 +1,26 @@
 /************************************************************/
 /*    NAME: Janille Maragh                                              */
 /*    ORGN: MIT                                             */
-/*    FILE: BHV_MyCircle.h                                      */
+/*    FILE: BHV_MySinusoid.h                                      */
 /*    DATE:                                                 */
 /************************************************************/
 
-#ifndef MyCircle_HEADER
-#define MyCircle_HEADER
+#ifndef MySinusoid_HEADER
+#define MySinusoid_HEADER
 
-#include <string>
+#include <string.h>
 #include "IvPBehavior.h"
 #include <math.h>
 #include "OF_Coupler.h"
 #include "ZAIC_PEAK.h"
 #include "AngleUtils.h"
-#include "XYPoint.h"
+#include <algorithm>
 
 
-class BHV_MyCircle : public IvPBehavior {
+class BHV_MySinusoid : public IvPBehavior {
 public:
-  BHV_MyCircle(IvPDomain);
-  ~BHV_MyCircle() {};
+  BHV_MySinusoid(IvPDomain);
+  ~BHV_MySinusoid() {};
   
   bool         setParam(std::string, std::string);
   void         onSetParamComplete();
@@ -35,21 +35,22 @@ public:
 protected: // Local Utility functions
     void            UpdateStateVariables();
     IvPFunction*    buildFunctionWithZAIC();
-    void            postViewPoint(bool viewable);
-
-protected: // Configuration parameters
-    double          m_centre_x;
-    double          m_centre_y;
-    double          m_radius;
-    double          m_num_segments;
-    double          m_arrival_radius;
-    double          m_targ_index;
-    double          m_des_speed;
-    XYPoint         m_nextpt;
     
+protected: // Configuration parameters
+    double          m_offset_angle;
+    double          m_start_x;
+    double          m_start_y;
+    double          m_amplitude;
+    double          m_wavelength;
+    double          m_disp_start_to_end;
+    double          m_num_wpts;
+    double          m_arrival_radius;
+    double          m_des_speed;
+    bool            m_trace_backwards;
+    
+    double          m_targ_index;
     vector<double>  m_x_pts;
     vector<double>  m_y_pts;
-    
 
 protected: // State variables
     double      m_osx;
@@ -67,6 +68,6 @@ protected: // State variables
 
 extern "C" {
   IVP_EXPORT_FUNCTION IvPBehavior * createBehavior(std::string name, IvPDomain domain) 
-  {return new BHV_MyCircle(domain);}
+  {return new BHV_MySinusoid(domain);}
 }
 #endif

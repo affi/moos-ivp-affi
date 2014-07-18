@@ -1,7 +1,7 @@
 /************************************************************/
 /*    NAME: Janille Maragh                                              */
 /*    ORGN: MIT                                             */
-/*    FILE: BHV_MyCircle.cpp                                    */
+/*    FILE: BHV_MySinusoid.cpp                                    */
 /*    DATE:                                                 */
 /************************************************************/
 
@@ -9,24 +9,32 @@
 #include <cstdlib>
 #include "MBUtils.h"
 #include "BuildUtils.h"
-#include "BHV_MyCircle.h"
+#include "BHV_MySinusoid.h"
 
 using namespace std;
 
 //---------------------------------------------------------------
 // Constructor
 
-BHV_MyCircle::BHV_MyCircle(IvPDomain domain) :
-IvPBehavior(domain)
+BHV_MySinusoid::BHV_MySinusoid(IvPDomain domain) :
+  IvPBehavior(domain)
 {
     m_osx = 0;
     m_osy = 0;
-    m_arrival_radius = 10;
+    m_arrival_radius = 1;
     m_generate_path = true;
     m_ang_to_targ = 0;
     m_targ_index = 0;
-    
-    //pi  = atan(1)*4;
+    m_offset_angle = 0;
+    m_start_x = -100;
+    m_start_y = -90;
+    m_amplitude = 20;
+    m_wavelength = 60;
+    m_disp_start_to_end = 120;
+    m_num_wpts = 30;
+    m_arrival_radius = 5;
+    m_des_speed = 3;
+    m_trace_backwards = false;
     
     // Provide a default behavior name
     IvPBehavior::setParam("name", "defaultname");
@@ -36,46 +44,68 @@ IvPBehavior(domain)
     
     // Add any variables this behavior needs to subscribe for
     addInfoVars("NAV_X, NAV_Y");
+
 }
 
 //---------------------------------------------------------------
 // Procedure: setParam()
 
-bool BHV_MyCircle::setParam(string param, string val)
+bool BHV_MySinusoid::setParam(string param, string val)
 {
-    // Convert the parameter to lower case for more general matching
-    param = tolower(param);
+  // Convert the parameter to lower case for more general matching
+  param = tolower(param);
+
+    if(param == "reverse") {
+        if ((strcmp (val.c_str(),"true")) == 0)
+            m_trace_backwards = true;
+        else if ((strcmp (val.c_str(),"false")) == 0)
+            m_trace_backwards = false;
+        return(true);
+    }
     
-    // Get the numerical value of the param argument for convenience once
-    double double_val = atof(val.c_str());
-    
-    if((param == "centre_x") && isNumber(val)) {
-        m_centre_x = double_val;
+  // Get the numerical value of the param argument for convenience once
+  double double_val = atof(val.c_str());
+  
+    if((param == "offset_angle") && isNumber(val)) {
+        m_offset_angle = double_val + 90.0;
         return(true);
     }
-    else if((param == "centre_y") && isNumber(val)) {
-        m_centre_y = double_val;
+    else if((param == "start_x") && isNumber(val)) {
+        m_start_x = double_val;
         return(true);
     }
-    else if((param == "radius") && isNumber(val)) {
-        m_radius = double_val;
+    else if((param == "start_y") && isNumber(val)) {
+        m_start_y = double_val;
         return(true);
     }
-    else if((param == "num_segments") && isNumber(val)) {
-        m_num_segments = double_val;
+    else if((param == "amplitude") && isNumber(val)) {
+        m_amplitude = double_val;
         return(true);
     }
     else if((param == "speed") && (double_val > 0) && (isNumber(val))) {
         m_des_speed = double_val;
         return(true);
     }
-    //    else if((param == "arrival_radius") && isNumber(val)) {
-    //        m_arrival_radius = double_val;
-    //        return(true);
-    //    }
+    else if((param == "wavelength") && isNumber(val)) {
+        m_wavelength = double_val;
+        return(true);
+    }
+    else if((param == "dist_start_end") && isNumber(val)) {
+        m_disp_start_to_end = double_val;
+        return(true);
+    }
+    else if((param == "num_wpts") && isNumber(val)) {
+        m_num_wpts = double_val;
+        return(true);
+    }
+    else if((param == "arrival_radius") && isNumber(val)) {
+        m_arrival_radius = double_val;
+        return(true);
+    }
     
-    // If not handled above, then just return false;
-    return(false);
+
+  // If not handled above, then just return false;
+  return(false);
 }
 
 //---------------------------------------------------------------
@@ -84,7 +114,7 @@ bool BHV_MyCircle::setParam(string param, string val)
 //            Good place to ensure all required params have are set.
 //            Or any inter-param relationships like a<b.
 
-void BHV_MyCircle::onSetParamComplete()
+void BHV_MySinusoid::onSetParamComplete()
 {
 }
 
@@ -93,7 +123,7 @@ void BHV_MyCircle::onSetParamComplete()
 //   Purpose: Invoked once upon helm start, even if this behavior
 //            is a template and not spawned at startup
 
-void BHV_MyCircle::onHelmStart()
+void BHV_MySinusoid::onHelmStart()
 {
 }
 
@@ -101,14 +131,14 @@ void BHV_MyCircle::onHelmStart()
 // Procedure: onIdleState()
 //   Purpose: Invoked on each helm iteration if conditions not met.
 
-void BHV_MyCircle::onIdleState()
+void BHV_MySinusoid::onIdleState()
 {
 }
 
 //---------------------------------------------------------------
 // Procedure: onCompleteState()
 
-void BHV_MyCircle::onCompleteState()
+void BHV_MySinusoid::onCompleteState()
 {
 }
 
@@ -116,7 +146,7 @@ void BHV_MyCircle::onCompleteState()
 // Procedure: postConfigStatus()
 //   Purpose: Invoked each time a param is dynamically changed
 
-void BHV_MyCircle::postConfigStatus()
+void BHV_MySinusoid::postConfigStatus()
 {
 }
 
@@ -124,7 +154,7 @@ void BHV_MyCircle::postConfigStatus()
 // Procedure: onIdleToRunState()
 //   Purpose: Invoked once upon each transition from idle to run state
 
-void BHV_MyCircle::onIdleToRunState()
+void BHV_MySinusoid::onIdleToRunState()
 {
 }
 
@@ -132,44 +162,41 @@ void BHV_MyCircle::onIdleToRunState()
 // Procedure: onRunToIdleState()
 //   Purpose: Invoked once upon each transition from run to idle state
 
-void BHV_MyCircle::onRunToIdleState()
+void BHV_MySinusoid::onRunToIdleState()
 {
-    postViewPoint(false);
-}
-//-----------------------------------------------------------
-// Procedure: postViewPoint
-
-void BHV_MyCircle::postViewPoint(bool viewable)
-{
-    m_nextpt.set_label(m_us_name + "'s next waypoint");
-    
-    string point_spec;
-    if(viewable)
-        point_spec = m_nextpt.get_spec("active=true");
-    else
-        point_spec = m_nextpt.get_spec("active=false");
-    postMessage("VIEW_POINT", point_spec);
 }
 
 //---------------------------------------------------------------
 // Procedure: onRunState()
 //   Purpose: Invoked each iteration when run conditions have been met.
 
-IvPFunction* BHV_MyCircle::onRunState()
+IvPFunction* BHV_MySinusoid::onRunState()
 {
-    // Part 1: Build the IvP function
-    IvPFunction *ipf = 0;
-    
+  // Part 1: Build the IvP function
+  IvPFunction *ipf = 0;
+
     UpdateStateVariables();
     
     // calculate waypoints on circumference
     if (m_generate_path)
     {
-        for (int i = 0; i < m_num_segments; i++) {
-            double x = m_centre_x + m_radius*cos((2*i*M_PI)/m_num_segments);
-            double y = m_centre_y + m_radius*sin((2*i*M_PI)/m_num_segments);
-            m_x_pts.push_back(x);
-            m_y_pts.push_back(y);
+        for (int i = 0; i < m_num_wpts; i++) {
+            double k = (2*M_PI)/m_wavelength;
+            double x = i*(m_disp_start_to_end/m_num_wpts);
+            double theta = m_offset_angle;
+            double A = m_amplitude;
+            
+            double xp = x*cos(theta) - A*(sin(k*x))*(tan(theta))*(cos(theta));
+            double yp = ((A*sin(k*x))/(cos(theta))) + xp*tan(theta);
+            double x_global = m_start_x + xp;
+            double y_global = m_start_y + yp;
+            m_x_pts.push_back(x_global);
+            m_y_pts.push_back(y_global);
+        }
+        
+        if (m_trace_backwards) {
+            reverse(m_x_pts.begin(), m_x_pts.end());
+            reverse(m_y_pts.begin(), m_y_pts.end());
         }
         
         m_targ_index = 0;
@@ -177,10 +204,9 @@ IvPFunction* BHV_MyCircle::onRunState()
         m_targ_y = m_y_pts[m_targ_index];
         m_generate_path = false;
     }
-    
-    if (m_targ_index > (m_num_segments - 1)) {
+
+    if (m_targ_index > (m_num_wpts - 1)) {
         setComplete();
-        postViewPoint(false);
         return(0);
     }
     else {
@@ -192,29 +218,25 @@ IvPFunction* BHV_MyCircle::onRunState()
         
         m_targ_x = m_x_pts[m_targ_index];
         m_targ_y = m_y_pts[m_targ_index];
-        m_nextpt.set_vx(m_x_pts[m_targ_index]);
-        m_nextpt.set_vy(m_y_pts[m_targ_index]);
         
         m_ang_to_targ   = atan2((m_targ_y - m_osy),(m_targ_x - m_osx));
         
         ipf = buildFunctionWithZAIC();
     }
-    
-    postViewPoint(true);
-    
-    // Part N: Prior to returning the IvP function, apply the priority wt
-    // Actual weight applied may be some value different than the configured
-    // m_priority_wt, depending on the behavior author's insite.
-    if(ipf)
-        ipf->setPWT(m_priority_wt);
-    
-    return(ipf);
+
+  // Part N: Prior to returning the IvP function, apply the priority wt
+  // Actual weight applied may be some value different than the configured
+  // m_priority_wt, depending on the behavior author's insite.
+  if(ipf)
+    ipf->setPWT(m_priority_wt);
+
+  return(ipf);
 }
 
 //-----------------------------------------------------------
 // Procedure: UpdateStateVariables
 
-void BHV_MyCircle::UpdateStateVariables() {
+void BHV_MySinusoid::UpdateStateVariables() {
     bool ok1, ok2;
     
     m_osx             = getBufferDoubleVal("NAV_X", ok1);
@@ -228,10 +250,11 @@ void BHV_MyCircle::UpdateStateVariables() {
     
 }
 
+
 //-----------------------------------------------------------
 // Procedure: buildFunctionWithZAIC
 
-IvPFunction *BHV_MyCircle::buildFunctionWithZAIC()
+IvPFunction *BHV_MySinusoid::buildFunctionWithZAIC()
 {
     ZAIC_PEAK spd_zaic(m_domain, "speed");
     spd_zaic.setSummit(m_des_speed);
@@ -268,5 +291,6 @@ IvPFunction *BHV_MyCircle::buildFunctionWithZAIC()
     
     return(ivp_function);
 }
+
 
 

@@ -94,3 +94,20 @@ TARGET_LINK_LIBRARIES(BHV_MyCircle
    geometry 
    ${SYSTEM_LIBS} )
 
+#--------------------------------------------------------
+#                                      	   BHV_MySinusoid
+#--------------------------------------------------------
+ADD_LIBRARY(BHV_MySinusoid SHARED 
+   BHV_MySinusoid.cpp)
+TARGET_LINK_LIBRARIES(BHV_MySinusoid
+   helmivp
+   behaviors 
+   ivpbuild 
+   logic 
+   ivpcore 
+   bhvutil 
+   mbutil 
+   geometry 
+   ${SYSTEM_LIBS} )
+
+
