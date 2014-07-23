@@ -19,24 +19,24 @@
 
 class BHV_MyCircle : public IvPBehavior {
 public:
-  BHV_MyCircle(IvPDomain);
-  ~BHV_MyCircle() {};
-  
-  bool         setParam(std::string, std::string);
-  void         onSetParamComplete();
-  void         onCompleteState();
-  void         onIdleState();
-  void         onHelmStart();
-  void         postConfigStatus();
-  void         onRunToIdleState();
-  void         onIdleToRunState();
-  IvPFunction* onRunState();
-
+    BHV_MyCircle(IvPDomain);
+    ~BHV_MyCircle() {};
+    
+    bool         setParam(std::string, std::string);
+    void         onSetParamComplete();
+    void         onCompleteState();
+    void         onIdleState();
+    void         onHelmStart();
+    void         postConfigStatus();
+    void         onRunToIdleState();
+    void         onIdleToRunState();
+    IvPFunction* onRunState();
+    
 protected: // Local Utility functions
     void            UpdateStateVariables();
     IvPFunction*    buildFunctionWithZAIC();
     void            postViewPoint(bool viewable);
-
+    
 protected: // Configuration parameters
     double          m_centre_x;
     double          m_centre_y;
@@ -50,7 +50,7 @@ protected: // Configuration parameters
     vector<double>  m_x_pts;
     vector<double>  m_y_pts;
     
-
+    
 protected: // State variables
     double      m_osx;
     double      m_osy;
@@ -66,7 +66,7 @@ protected: // State variables
 #define IVP_EXPORT_FUNCTION
 
 extern "C" {
-  IVP_EXPORT_FUNCTION IvPBehavior * createBehavior(std::string name, IvPDomain domain) 
-  {return new BHV_MyCircle(domain);}
+    IVP_EXPORT_FUNCTION IvPBehavior * createBehavior(std::string name, IvPDomain domain)
+    {return new BHV_MyCircle(domain);}
 }
 #endif

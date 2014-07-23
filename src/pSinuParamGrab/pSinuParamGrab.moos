@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pSinuParamGrab config block
+
+ProcessConfig = pSinuParamGrab
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+
