@@ -1,0 +1,10 @@
+//---------------------------------------------------------
+// pSinuParamGrab Config Block  (Created from Plugin)
+
+ProcessConfig = pSinuParamGrab
+{
+  AppTick    = 2
+  CommsTick  = 2
+
+}
+

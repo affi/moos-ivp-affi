@@ -29,8 +29,11 @@ Processconfig = ANTLER
   Run = pFrontEstimate     @ NewConsole = false
   Run = pBasicContactMgr   @ NewConsole = false
 
+  Run = pSinuParamGrab	   @ NewConsole = false
+
 }
 
+#include plug_pSinuParamGrab.moos
 #include plug_pFrontEstimate.moos
 #include plug_uTimerScript.moos  
 #include plug_uFldNodeBroker.moos

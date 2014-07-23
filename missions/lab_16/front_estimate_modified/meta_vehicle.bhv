@@ -1,5 +1,5 @@
 //----------------------------------------------
-// Vehicle behavior file
+// Vehicle behavior file FRONT_ESTIMATE_MODIFIED
 //----------------------------------------------
 
 initialize   DEPLOY  = false
@@ -9,6 +9,9 @@ initialize   SURVEY  = true
 initialize   AVOID   = true
 initialize   SURVEY_UNDERWAY = false
 initialize   OPREGION = true
+initialize   CIRCLE1 = true
+initialize   CIRCLE2 = false
+initialize   TIMING = false
 
 set MODE = ACTIVE {
   DEPLOY = true
@@ -27,14 +30,14 @@ set MODE = SURVEYING {
 //----------------------------------------------
 Behavior = BHV_MyCircle
 {
-  name = circle
+  name = circle1
   pwt  = 100
 
   condition 	= MODE==SURVEYING
+  condition	= CIRCLE1 = true
   activeflag   	= SURVEY_UNDERWAY = true
-  inactiveflag 	= SURVEY_UNDERWAY = false
-  endflag   	= RETURN = true
-
+  endflag	= CIRCLE1 = false
+  endflag	= CIRCLE2 = true
 
   CENTRE_X	= $(CENTRE_X)
   CENTRE_Y	= $(CENTRE_Y)
@@ -43,29 +46,96 @@ Behavior = BHV_MyCircle
   SPEED		= $(SPEED)
 }
 
+
+
 //----------------------------------------------
-//Behavior = BHV_Waypoint
-{ 
-  name         = waypt_survey
-  pwt          = 100
-  condition    = MODE==SURVEYING
-  perpetual    = true
-  updates      = SURVEY_UPDATES
-  activeflag   = SURVEY_UNDERWAY = true
-  inactiveflag = SURVEY_UNDERWAY = false
-  endflag      = RETURN = true
+Behavior = BHV_MyCircle
+{
+  name = circle2
+  pwt  = 100
 
-         speed = 2   // meters per second
-        radius = 5.0
-   slip_radius = 15.0
-          lead = 8
-	  lead_damper=1
-	points = format=lawnmower, label=archie_survey, x=$(SURVEY_X), y=$(SURVEY_Y), width=$(WIDTH), height=$(HEIGHT),lane_width=$(LANE_WIDTH), rows=north-south, degs=$(DEGREES)
+  condition 	= MODE==SURVEYING
+  condition	= CIRCLE2 = true
+  activeflag   	= SURVEY_UNDERWAY = true
+  endflag	= SURVEY_UNDERWAY = false
+  endflag	= CIRCLE2 = false
+  endflag	= TIMING = true
+  
+  CENTRE_X	= $(CENTRE_X)
+  CENTRE_Y	= $(CENTRE_Y)
+  RADIUS	= $(RADIUS)
+  NUM_SEGMENTS	= $(NUM_SEGMENTS)
+  SPEED		= $(SPEED)
+}
 
-        repeat = 0
-  visual_hints = nextpt_color=red, nextpt_lcolor=green
-  visual_hints = vertex_color=yellow, edge_color=gray25
-  visual_hints = vertex_size=1, edge_size=1
+//----------------------------------------------
+Behavior = BHV_Timer
+{
+  name = timed_waiting
+  pwt  = 100
+
+  condition 	= MODE==SURVEYING
+  condition	= TIMING = true
+  activeflag   	= SURVEY_UNDERWAY = false
+  endflag	= SINUSOID1 = true
+  endflag	= TIMING = false
+  
+  duration	= 5
+}
+
+
+//----------------------------------------------
+Behavior = BHV_MySinusoid
+{
+  name = sinusoid1
+  pwt  = 100
+
+  condition 	= MODE==SURVEYING
+  condition 	= SINUSOID1 = true
+  endflag	= SINUSOID1 = false
+  endflag	= SINUSOID2 = true
+  activeflag   	= SURVEY_UNDERWAY = true
+ 
+  OFFSET_ANGLE	 = 0
+  START_X	 = 0
+  START_Y	 = -100
+  AMPLITUDE	 = 10
+  SPEED		 = 4
+  WAVELENGTH	 = 10
+  DIST_START_END = $(DIST_START_END)
+  NUM_WPTS	 = 30
+  ARRIVAL_RADIUS = 6
+  REVERSE	 = false
+
+  updates	 = UPDATES_VAR
+}
+
+//----------------------------------------------
+Behavior = BHV_MySinusoid
+{
+  name = sinusoid2
+  pwt  = 100
+
+  condition 	= MODE==SURVEYING
+  condition 	= SINUSOID2 = true
+  endflag	= SINUSOID2 = false
+  endflag   	= RETURN = true
+  activeflag   	= SURVEY_UNDERWAY = true
+  endflag	= SURVEY_UNDERWAY = false
+  endflag	= AVOID = false
+
+  OFFSET_ANGLE	 = 0
+  START_X	 = 0
+  START_Y	 = -100
+  AMPLITUDE	 = 10
+  SPEED		 = 4
+  WAVELENGTH	 = 10
+  DIST_START_END = $(DIST_START_END)
+  NUM_WPTS	 = 30
+  ARRIVAL_RADIUS = 6
+  REVERSE	 = true
+
+  updates	 = UPDATES_VAR
 }
 
 //----------------------------------------------
@@ -78,6 +148,7 @@ Behavior = BHV_Waypoint
   perpetual  = true
   endflag    = RETURN = false
   endflag    = DEPLOY = false
+  endflag    = AVOID = false
 
          speed = 2.0
         radius = 2.0
@@ -88,7 +159,7 @@ Behavior = BHV_Waypoint
 }
 
 //----------------------------------------------
-//Behavior = BHV_OpRegion
+Behavior = BHV_OpRegion
 {
   name       = opregion
   pwt        = 100
@@ -102,7 +173,7 @@ Behavior = BHV_Waypoint
 }
 
 //------------------------------------------------
-//Behavior = BHV_AvoidCollision
+Behavior = BHV_AvoidCollision
 {
   name       = avdcollision_
   pwt        = 200
