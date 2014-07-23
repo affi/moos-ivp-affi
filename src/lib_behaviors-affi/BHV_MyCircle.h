@@ -1,9 +1,15 @@
-/************************************************************/
-/*    NAME: Janille Maragh                                              */
-/*    ORGN: MIT                                             */
-/*    FILE: BHV_MyCircle.h                                      */
-/*    DATE:                                                 */
-/************************************************************/
+/**************************************************************/
+/*    NAME: Janille Maragh                                    */
+/*    ORGN: MIT                                               */
+/*    FILE: BHV_MyCircle.h                                    */
+/*    DATE: Wednesday, July 23, 2014                          */
+/*    SMRY: This behaviour lets vehicle follow a circular     */
+/*          trajectory, given the coordinates of the circle's */
+/*          centre, the radius of the circle and the number   */
+/*          of desired waypoints (more to increase smoothness */
+/*          of trajectory).                                   */
+/**************************************************************/
+
 
 #ifndef MyCircle_HEADER
 #define MyCircle_HEADER

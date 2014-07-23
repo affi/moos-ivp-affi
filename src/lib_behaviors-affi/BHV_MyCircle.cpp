@@ -1,9 +1,14 @@
-/************************************************************/
-/*    NAME: Janille Maragh                                              */
-/*    ORGN: MIT                                             */
-/*    FILE: BHV_MyCircle.cpp                                    */
-/*    DATE:                                                 */
-/************************************************************/
+/**************************************************************/
+/*    NAME: Janille Maragh                                    */
+/*    ORGN: MIT                                               */
+/*    FILE: BHV_MyCircle.cpp                                  */
+/*    DATE: Wednesday, July 23, 2014                          */
+/*    SMRY: This behaviour lets vehicle follow a circular     */
+/*          trajectory, given the coordinates of the circle's */
+/*          centre, the radius of the circle and the number   */
+/*          of desired waypoints (more to increase smoothness */
+/*          of trajectory).                                   */
+/**************************************************************/
 
 #include <iterator>
 #include <cstdlib>
@@ -25,8 +30,6 @@ IvPBehavior(domain)
     m_generate_path = true;
     m_ang_to_targ = 0;
     m_targ_index = 0;
-    
-    //pi  = atan(1)*4;
     
     // Provide a default behavior name
     IvPBehavior::setParam("name", "defaultname");
@@ -69,10 +72,6 @@ bool BHV_MyCircle::setParam(string param, string val)
         m_des_speed = double_val;
         return(true);
     }
-    //    else if((param == "arrival_radius") && isNumber(val)) {
-    //        m_arrival_radius = double_val;
-    //        return(true);
-    //    }
     
     // If not handled above, then just return false;
     return(false);
@@ -162,9 +161,9 @@ IvPFunction* BHV_MyCircle::onRunState()
     
     UpdateStateVariables();
     
-    // calculate waypoints on circumference
     if (m_generate_path)
     {
+        // calculate waypoints on circumference of circular trajectory
         for (int i = 0; i < m_num_segments; i++) {
             double x = m_centre_x + m_radius*cos((2*i*M_PI)/m_num_segments);
             double y = m_centre_y + m_radius*sin((2*i*M_PI)/m_num_segments);
@@ -185,17 +184,19 @@ IvPFunction* BHV_MyCircle::onRunState()
     }
     else {
         m_dist_to_targ  = pow((pow((m_targ_x - m_osx),2)+pow((m_targ_y - m_osy),2)),0.5);
-        
+    
+        // if within arrival radius of target wpt, start to approach next one
         if (m_dist_to_targ < m_arrival_radius) {
             m_targ_index++;
         }
         
+        // update target waypoint
         m_targ_x = m_x_pts[m_targ_index];
         m_targ_y = m_y_pts[m_targ_index];
+        
+        // enables viewing of waypoints
         m_nextpt.set_vx(m_x_pts[m_targ_index]);
         m_nextpt.set_vy(m_y_pts[m_targ_index]);
-        
-        m_ang_to_targ   = atan2((m_targ_y - m_osy),(m_targ_x - m_osx));
         
         ipf = buildFunctionWithZAIC();
     }
@@ -247,9 +248,6 @@ IvPFunction *BHV_MyCircle::buildFunctionWithZAIC()
     double rel_ang_to_wpt = relAng(m_osx, m_osy, m_targ_x, m_targ_y);
     ZAIC_PEAK crs_zaic(m_domain, "course");
     crs_zaic.setSummit(rel_ang_to_wpt);
-    
-    //    ZAIC_PEAK crs_zaic(m_domain, "course");
-    //    crs_zaic.setSummit(m_ang_to_targ);
     crs_zaic.setPeakWidth(0);
     crs_zaic.setBaseWidth(180.0);
     crs_zaic.setSummitDelta(0);
